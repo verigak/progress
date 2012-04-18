@@ -17,7 +17,7 @@ To use them, just call ``next`` to advance and ``finish`` to finish. ::
 
     from progress.bar import Bar
 
-    bar = Bar('Working', max=20)
+    bar = Bar('Processing', max=20)
     for i in range(20):
         # Do some work
         bar.next()
@@ -36,11 +36,11 @@ use the ``iter`` method. ::
 Progress bars are very customizable, you can change their width, their fill
 character, their suffix and more. ::
 
-    bar = Bar('Loading', fill='@', suffix='%(percent).1f%%')
+    bar = Bar('Loading', fill='@', suffix='%(percent)d%%')
 
 This will produce a bar like the following: ::
 
-    Processing |@@@@@@@@@@@@@                   | 42%
+    Loading |@@@@@@@@@@@@@                   | 42%
 
 You can use a number of template arguments in ``message`` and ``suffix``:
 
