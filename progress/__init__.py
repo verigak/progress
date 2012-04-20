@@ -46,17 +46,19 @@ class Infinite(object):
         w = self.avg_window
         self.avg = dt if self.avg is None else (dt + w * self.avg) / (w + 1)
 
-    def update(self):
-        self.update_stats()
         kv = [(key, val) for key, val in self.__dict__.items()
                          if not key.startswith('_')]
         self.ctx.update(kv)
+
+    def update(self):
+        pass
 
     def finish(self):
         pass
 
     def next(self):
         self.index = self.index + 1
+        self.update_stats()
         self.update()
 
     def iter(self, it):
@@ -75,9 +77,6 @@ class Progress(Infinite):
         self.eta = None
 
     def update_stats(self):
-        if self.delta <= 0:
-            return
-
         # Calculate moving average
         now = time()
         dt = (now - self._ts) / self.delta
@@ -90,10 +89,16 @@ class Progress(Infinite):
         self.remaining = self.max - self.index
         self.eta = int(ceil(self.avg * self.remaining))
 
+        kv = [(key, val) for key, val in self.__dict__.items()
+                         if not key.startswith('_')]
+        self.ctx.update(kv)
+
     def next(self):
         prev = self.index
         self.index = min(self.index + 1, self.max)
         self.delta = self.index - prev
+        if self.delta > 0:
+            self.update_stats()
         self.update()
 
     def goto(self, index):
@@ -104,6 +109,8 @@ class Progress(Infinite):
 
         self.index = index
         self.delta = delta
+        if delta > 0:
+            self.update_stats()
         self.update()
 
     def iter(self, it):

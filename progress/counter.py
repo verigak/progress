@@ -22,13 +22,11 @@ class Counter(WriteMixin, Infinite):
     message = ''
 
     def update(self):
-        super(Counter, self).update()
         self.write(str(self.index))
 
 
 class Countdown(WriteMixin, Progress):
     def update(self):
-        super(Countdown, self).update()
         self.write(str(self.remaining))
 
 
@@ -36,7 +34,6 @@ class Stack(WriteMixin, Progress):
     phases = (u' ', u'▁', u'▂', u'▃', u'▄', u'▅', u'▆', u'▇', u'█')
 
     def update(self):
-        super(Stack, self).update()
         nphases = len(self.phases)
         i = min(nphases - 1, int(self.progress * nphases))
         self.write(self.phases[i])

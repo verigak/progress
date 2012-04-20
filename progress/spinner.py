@@ -23,7 +23,6 @@ class Spinner(WriteMixin, Infinite):
     phases = ('-', '\\', '|', '/')
 
     def update(self):
-        super(Spinner, self).update()
         i = self.index % len(self.phases)
         self.write(self.phases[i])
 

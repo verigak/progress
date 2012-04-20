@@ -28,7 +28,6 @@ class Bar(WritelnMixin, Progress):
     fill = '#'
 
     def update(self):
-        super(Bar, self).update()
         filled_length = int(self.width * self.progress)
         empty_length = self.width - filled_length
 
@@ -63,8 +62,6 @@ class IncrementalBar(Bar):
     phases = (u' ', u'▏', u'▎', u'▍', u'▌', u'▋', u'▊', u'▉', u'█')
 
     def update(self):
-        super(IncrementalBar, self).update()
-
         nphases = len(self.phases)
         expanded_length = int(nphases * self.width * self.progress)
         filled_length = int(self.width * self.progress)
