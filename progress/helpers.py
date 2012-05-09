@@ -15,7 +15,13 @@
 from __future__ import print_function
 
 
+HIDE_CURSOR = '\x1b[?25l'
+SHOW_CURSOR = '\x1b[?25h'
+
+
 class WriteMixin(object):
+    hide_cursor = False
+
     def __init__(self, message=None, **kwargs):
         super(WriteMixin, self).__init__(**kwargs)
         self._width = 0
@@ -23,6 +29,8 @@ class WriteMixin(object):
             self.message = message
 
         if self.file.isatty():
+            if self.hide_cursor:
+                print(HIDE_CURSOR, end='', file=self.file)
             print(self.message, end='', file=self.file)
             self.file.flush()
 
@@ -33,13 +41,21 @@ class WriteMixin(object):
             self._width = max(self._width, len(s))
             self.file.flush()
 
+    def finish(self):
+        if self.file.isatty() and self.hide_cursor:
+            print(SHOW_CURSOR, end='', file=self.file)
+
 
 class WritelnMixin(object):
+    hide_cursor = False
+
     def __init__(self, message=None, **kwargs):
         super(WritelnMixin, self).__init__(**kwargs)
         if message:
             self.message = message
 
+        if self.file.isatty() and self.hide_cursor:
+            print(HIDE_CURSOR, end='', file=self.file)
 
     def clearln(self):
         if self.file.isatty():
@@ -54,3 +70,5 @@ class WritelnMixin(object):
     def finish(self):
         if self.file.isatty():
             print(file=self.file)
+            if self.hide_cursor:
+                print(SHOW_CURSOR, end='', file=self.file)

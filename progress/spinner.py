@@ -21,6 +21,7 @@ from .helpers import WriteMixin
 class Spinner(WriteMixin, Infinite):
     message = ''
     phases = ('-', '\\', '|', '/')
+    hide_cursor = True
 
     def update(self):
         i = self.index % len(self.phases)
