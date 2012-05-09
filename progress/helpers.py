@@ -37,20 +37,19 @@ class WriteMixin(object):
 class WritelnMixin(object):
     def __init__(self, message=None, **kwargs):
         super(WritelnMixin, self).__init__(**kwargs)
-        self.max_line_width = 0
         if message:
             self.message = message
 
-    def writeln(self, line):
-        if not self.file.isatty():
-            return
-        if len(line) > self.max_line_width:
-            self.max_line_width = len(line)
-        else:
-            line += ' ' * (self.max_line_width - len(line))     # Add padding
 
-        print('\r' + line, end='', file=self.file)
-        self.file.flush()
+    def clearln(self):
+        if self.file.isatty():
+            print('\r\x1b[K', end='', file=self.file)
+
+    def writeln(self, line):
+        if self.file.isatty():
+            self.clearln()
+            print(line, end='', file=self.file)
+            self.file.flush()
 
     def finish(self):
         if self.file.isatty():
