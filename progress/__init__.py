@@ -13,17 +13,20 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 from __future__ import division
+from __future__ import print_function
 
+from signal import signal, SIGINT
 from math import ceil
-from sys import stderr
+from sys import stderr, exit
 from time import time
 
 
 __version__ = '1.0.2'
+__FILE__ = stderr
 
 
 class Infinite(object):
-    file = stderr
+    file = __FILE__
     avg_window = 10
 
     def __init__(self, *args, **kwargs):
@@ -130,3 +133,11 @@ class Progress(Infinite):
             yield x
             self.next()
         self.finish()
+
+
+def _sig_term_handler(*args):
+    show_cursor = '\x1b[?25h'
+    print(show_cursor, end='', file=__FILE__)
+    exit(0)
+
+signal(SIGINT, _sig_term_handler)
