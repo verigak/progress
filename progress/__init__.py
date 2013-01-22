@@ -24,7 +24,6 @@ __version__ = '1.0.2'
 
 class Infinite(object):
     file = stderr
-    avg_window = 10
 
     def __init__(self, *args, **kwargs):
         self.ctx = {}
@@ -42,8 +41,7 @@ class Infinite(object):
         # Calculate moving average
         now = time()
         dt = now - self._ts
-        w = self.avg_window
-        self.avg = dt if self.avg else (dt + w * self.avg) / (w + 1)
+        self.avg = (dt + self.index * self.avg) / (self.index + 1) if self.avg else dt
         self._ts = now
 
         kv = [(key, val) for key, val in self.__dict__.items()
@@ -88,8 +86,7 @@ class Progress(Infinite):
         now = time()
         if self.delta:
             dt = (now - self._ts) / self.delta
-            w = self.avg_window
-            self.avg = dt if self.avg else (dt + w * self.avg) / (w + 1)
+            self.avg = (dt + self.index * self.avg) / (self.index + 1) if self.avg else dt
             self.eta = int(ceil(self.avg * self.remaining))
         self._ts = now
 
