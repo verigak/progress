@@ -72,3 +72,19 @@ class WritelnMixin(object):
             print(file=self.file)
             if self.hide_cursor:
                 print(SHOW_CURSOR, end='', file=self.file)
+
+
+from signal import signal, SIGINT
+from sys import exit
+
+
+class SigIntMixin(object):
+    """Registers a signal handler that calls finish on SIGINT"""
+
+    def __init__(self, *args, **kwargs):
+        super(SigIntMixin, self).__init__(*args, **kwargs)
+        signal(SIGINT, self._sigint_handler)
+
+    def _sigint_handler(self, signum, frame):
+        self.finish()
+        exit(0)
