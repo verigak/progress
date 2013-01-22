@@ -37,7 +37,8 @@ class WriteMixin(object):
     def write(self, s):
         if self.file.isatty():
             b = '\b' * self._width
-            print(b + s.ljust(self._width), end='', file=self.file)
+            c = s.encode('utf8').ljust(self._width)
+            print(b + c, end='', file=self.file)
             self._width = max(self._width, len(s))
             self.file.flush()
 
@@ -64,7 +65,7 @@ class WritelnMixin(object):
     def writeln(self, line):
         if self.file.isatty():
             self.clearln()
-            print(line, end='', file=self.file)
+            print(line.encode('utf8'), end='', file=self.file)
             self.file.flush()
 
     def finish(self):
