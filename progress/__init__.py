@@ -19,7 +19,7 @@ from sys import stderr
 from time import time
 
 
-__version__ = '1.0.2'
+__version__ = '1.1'
 
 
 class Infinite(object):
