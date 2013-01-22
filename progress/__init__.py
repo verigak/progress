@@ -57,8 +57,8 @@ class Infinite(object):
     def finish(self):
         pass
 
-    def next(self):
-        self.index = self.index + 1
+    def next(self, n=1):
+        self.index = self.index + n
         self.update_stats()
         self.update()
 
@@ -99,9 +99,9 @@ class Progress(Infinite):
         self.update_stats()
         self.update()
 
-    def next(self):
+    def next(self, n=1):
         prev = self.index
-        self.index = min(self.index + 1, self.max)
+        self.index = min(self.index + n, self.max)
         self.delta = self.index - prev
         self.update_stats()
         self.update()
