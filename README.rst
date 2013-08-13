@@ -44,17 +44,20 @@ This will produce a bar like the following: ::
 
 You can use a number of template arguments in ``message`` and ``suffix``:
 
-=========  =============================
-Name       Value
-=========  =============================
-index      current value
-max        maximum value
-remaining  max - index
-progress   index / max
-percent    progress * 100
-avg        rolling average time per item (in seconds)
-eta        avg * remaining
-=========  =============================
+============= ============================================================
+Name          Value
+============= ============================================================
+index         current value
+max           maximum value
+remaining     max - index
+progress      index / max
+percent       progress * 100
+avg           rolling average time per item (in seconds)
+eta           avg * remaining
+elapsed       elapsed time (in seconds)
+human_eta     human readable eta in days, hours, mins and seconds
+human_elapsed human readable elapsed time in days, hours, mins and seconds
+============= ============================================================
 
 Instead of passing all configuration options on instatiation, you can create
 your custom subclass. ::

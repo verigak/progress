@@ -14,6 +14,17 @@ from progress.counter import Counter, Countdown, Stack, Pie
 for bar in (Bar, ChargingBar, FillingSquaresBar, FillingCirclesBar):
     for i in bar(bar.__name__).iter(range(100)):
         sleep(0.04)
+print()
+
+for bar in (Bar, ChargingBar, FillingSquaresBar, FillingCirclesBar):
+    for i in bar(bar.__name__, suffix="%(index)d/%(max)d %(percent).1f%% - Rate: %(avg).1fs ETA: %(eta)ds Elapsed: %(elapsed)ds", max=100).iter(range(100)):
+        sleep(0.1)
+print()
+
+for bar in (Bar, ChargingBar, FillingSquaresBar, FillingCirclesBar):
+    for i in bar(bar.__name__, suffix="%(index)d/%(max)d %(percent).1f%% - Rate: %(avg).1fs ETA: %(human_eta)s Elapsed: %(human_elapsed)s", max=100).iter(range(100)):
+        sleep(0.2)
+print()
 
 for bar in (IncrementalBar, ShadyBar):
     for i in bar(bar.__name__).iter(range(200)):

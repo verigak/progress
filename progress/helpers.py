@@ -89,3 +89,28 @@ class SigIntMixin(object):
     def _sigint_handler(self, signum, frame):
         self.finish()
         exit(0)
+
+
+def duration(seconds):
+    days = int(seconds / 60 / 60 / 24)
+    seconds = (seconds) % (60 * 60 * 24)
+    hours = int((seconds / 60 / 60))
+    seconds = (seconds) % (60 * 60)
+    mins = int((seconds / 60))
+    seconds = int((seconds) % (60))
+
+    return (days, hours, mins, seconds)
+
+
+def format_duration(duration):
+    days, hours, mins, seconds = duration
+
+    output = []
+
+    if days:
+        output.append("{0:d}d".format(days))
+        output.append(" ")
+
+    output.append("{0:d}:{1:d}:{2:d}".format(hours, mins, seconds))
+
+    return "".join(output)
