@@ -76,6 +76,7 @@ class Progress(Infinite):
         super(Progress, self).__init__(*args, **kwargs)
         self.max = kwargs.get('max', 100)
         self.eta = 0
+        self.elapsed = 0
 
     def update_stats(self):
         self.progress = min(1, self.index / self.max)
@@ -88,6 +89,7 @@ class Progress(Infinite):
             dt = (now - self._ts) / self.delta
             self.avg = (dt + self.index * self.avg) / (self.index + 1) if self.avg else dt
             self.eta = int(ceil(self.avg * self.remaining))
+            self.elapsed += (now - self._ts)
         self._ts = now
 
         kv = [(key, val) for key, val in self.__dict__.items()
