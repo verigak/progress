@@ -18,6 +18,7 @@ from math import ceil
 from sys import stderr
 from time import time
 
+from .helpers import duration, format_duration
 
 __version__ = '1.1'
 
@@ -77,6 +78,8 @@ class Progress(Infinite):
         self.max = kwargs.get('max', 100)
         self.eta = 0
         self.elapsed = 0
+        self.human_eta = ""
+        self.human_elapsed = ""
 
     def update_stats(self):
         self.progress = min(1, self.index / self.max)
@@ -90,6 +93,8 @@ class Progress(Infinite):
             self.avg = (dt + self.index * self.avg) / (self.index + 1) if self.avg else dt
             self.eta = int(ceil(self.avg * self.remaining))
             self.elapsed += (now - self._ts)
+            self.human_eta = format_duration(duration(self.eta))
+            self.human_elapsed = format_duration(duration(self.elapsed))
         self._ts = now
 
         kv = [(key, val) for key, val in self.__dict__.items()
