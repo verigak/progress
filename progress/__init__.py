@@ -21,7 +21,7 @@ from sys import stderr
 from time import time
 
 
-__version__ = '1.1'
+__version__ = '1.2'
 
 
 class Infinite(object):
