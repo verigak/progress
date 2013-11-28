@@ -14,6 +14,7 @@
 
 from __future__ import division
 
+from datetime import timedelta
 from math import ceil
 from sys import stderr
 from time import time
@@ -26,16 +27,25 @@ class Infinite(object):
     file = stderr
 
     def __init__(self, *args, **kwargs):
-        self.ctx = {}
-        for key, val in kwargs.items():
-            if hasattr(self, key):
-                setattr(self, key, val)
-            else:
-                self.ctx[key] = val
-
-        self.index = 0
         self.avg = 0
-        self._ts = time()
+        self.index = 0
+        self.start_ts = time()
+        self._ts = self.start_ts
+        for key, val in kwargs.items():
+            setattr(self, key, val)
+
+    def __getitem__(self, key):
+        if key.startswith('_'):
+            return None
+        return getattr(self, key, None)
+
+    @property
+    def elapsed(self):
+        return int(time() - self.start_ts)
+
+    @property
+    def elapsed_td(self):
+        return timedelta(seconds=self.elapsed)
 
     def update_stats(self):
         # Calculate moving average
@@ -43,10 +53,6 @@ class Infinite(object):
         dt = now - self._ts
         self.avg = (dt + self.index * self.avg) / (self.index + 1) if self.avg else dt
         self._ts = now
-
-        kv = [(key, val) for key, val in self.__dict__.items()
-                         if not key.startswith('_')]
-        self.ctx.update(kv)
 
     def update(self):
         pass
@@ -75,8 +81,15 @@ class Progress(Infinite):
     def __init__(self, *args, **kwargs):
         super(Progress, self).__init__(*args, **kwargs)
         self.max = kwargs.get('max', 100)
-        self.eta = 0
-        self.elapsed = 0
+        self.remaining = self.max
+
+    @property
+    def eta(self):
+        return int(ceil(self.avg * self.remaining))
+
+    @property
+    def eta_td(self):
+        return timedelta(seconds=self.eta)
 
     def update_stats(self):
         self.progress = min(1, self.index / self.max)
@@ -88,13 +101,7 @@ class Progress(Infinite):
         if self.delta:
             dt = (now - self._ts) / self.delta
             self.avg = (dt + self.index * self.avg) / (self.index + 1) if self.avg else dt
-            self.eta = int(ceil(self.avg * self.remaining))
-            self.elapsed += now - self._ts
         self._ts = now
-
-        kv = [(key, val) for key, val in self.__dict__.items()
-                         if not key.startswith('_')]
-        self.ctx.update(kv)
 
     def start(self):
         self.delta = 0

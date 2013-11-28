@@ -32,10 +32,10 @@ class Bar(WritelnMixin, Progress):
         filled_length = int(self.width * self.progress)
         empty_length = self.width - filled_length
 
-        message = self.message % self.ctx
+        message = self.message % self
         bar = self.fill * filled_length
         empty = self.empty_fill * empty_length
-        suffix = self.suffix % self.ctx
+        suffix = self.suffix % self
         line = ''.join([message, self.bar_prefix, bar, empty, self.bar_suffix,
                         suffix])
         self.writeln(line)
@@ -69,11 +69,11 @@ class IncrementalBar(Bar):
         empty_length = self.width - filled_length
         phase = expanded_length - (filled_length * nphases)
 
-        message = self.message % self.ctx
+        message = self.message % self
         bar = self.phases[-1] * filled_length
         current = self.phases[phase] if phase > 0 else ''
         empty = self.empty_fill * max(0, empty_length - len(current))
-        suffix = self.suffix % self.ctx
+        suffix = self.suffix % self
         line = ''.join([message, self.bar_prefix, bar, current, empty,
                         self.bar_suffix, suffix])
         self.writeln(line)
