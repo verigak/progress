@@ -44,17 +44,20 @@ This will produce a bar like the following: ::
 
 You can use a number of template arguments in ``message`` and ``suffix``:
 
-=========  =============================
-Name       Value
-=========  =============================
-index      current value
-max        maximum value
-remaining  max - index
-progress   index / max
-percent    progress * 100
-avg        rolling average time per item (in seconds)
-eta        avg * remaining
-=========  =============================
+==========  ================================
+Name        Value
+==========  ================================
+index       current value
+max         maximum value
+remaining   max - index
+progress    index / max
+percent     progress * 100
+avg         simple moving average time per item (in seconds)
+elapsed     elapsed time in seconds
+elapsed_td  elapsed as a timedelta (useful for printing as a string)
+eta         avg * remaining
+eta_td      eta as a timedelta (useful for printing as a string)
+==========  ================================
 
 Instead of passing all configuration options on instatiation, you can create
 your custom subclass. ::
@@ -63,6 +66,14 @@ your custom subclass. ::
         message = 'Loading'
         fill = '*'
         suffix = '%(percent).1f%% - %(eta)ds'
+
+You can also override any of the arguments or create your own. ::
+
+    class SlowBar(Bar):
+        suffix = '%(remaining_hours)d hours remaining'
+        @property
+        def remaining_hours(self):
+            return self.eta // 3600
 
 
 Spinners
