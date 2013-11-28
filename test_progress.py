@@ -32,7 +32,7 @@ for singleton in (Counter, Countdown, Stack, Pie):
         sleep(0.03)
     print()
 
-bar = IncrementalBar('Random', backtrack=True, suffix='')
+bar = IncrementalBar('Random', suffix='%(index)d')
 for i in range(100):
     bar.goto(randint(0, 100))
     sleep(0.1)

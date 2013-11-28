@@ -14,6 +14,7 @@
 
 from __future__ import division
 
+from collections import deque
 from datetime import timedelta
 from math import ceil
 from sys import stderr
@@ -25,12 +26,13 @@ __version__ = '1.1'
 
 class Infinite(object):
     file = stderr
+    sma_window = 10
 
     def __init__(self, *args, **kwargs):
-        self.avg = 0
         self.index = 0
         self.start_ts = time()
         self._ts = self.start_ts
+        self._dt = deque(maxlen=self.sma_window)
         for key, val in kwargs.items():
             setattr(self, key, val)
 
@@ -40,19 +42,16 @@ class Infinite(object):
         return getattr(self, key, None)
 
     @property
+    def avg(self):
+        return sum(self._dt) / len(self._dt) if self._dt else 0
+
+    @property
     def elapsed(self):
         return int(time() - self.start_ts)
 
     @property
     def elapsed_td(self):
         return timedelta(seconds=self.elapsed)
-
-    def update_stats(self):
-        # Calculate moving average
-        now = time()
-        dt = now - self._ts
-        self.avg = (dt + self.index * self.avg) / (self.index + 1) if self.avg else dt
-        self._ts = now
 
     def update(self):
         pass
@@ -64,8 +63,13 @@ class Infinite(object):
         pass
 
     def next(self, n=1):
+        if n > 0:
+            now = time()
+            dt = (now - self._ts) / n
+            self._dt.append(dt)
+            self._ts = now
+
         self.index = self.index + n
-        self.update_stats()
         self.update()
 
     def iter(self, it):
@@ -76,12 +80,9 @@ class Infinite(object):
 
 
 class Progress(Infinite):
-    backtrack = False
-
     def __init__(self, *args, **kwargs):
         super(Progress, self).__init__(*args, **kwargs)
         self.max = kwargs.get('max', 100)
-        self.remaining = self.max
 
     @property
     def eta(self):
@@ -91,40 +92,24 @@ class Progress(Infinite):
     def eta_td(self):
         return timedelta(seconds=self.eta)
 
-    def update_stats(self):
-        self.progress = min(1, self.index / self.max)
-        self.percent = self.progress * 100
-        self.remaining = self.max - self.index
+    @property
+    def percent(self):
+        return self.progress * 100
 
-        # Calculate moving average
-        now = time()
-        if self.delta:
-            dt = (now - self._ts) / self.delta
-            self.avg = (dt + self.index * self.avg) / (self.index + 1) if self.avg else dt
-        self._ts = now
+    @property
+    def progress(self):
+        return min(1, self.index / self.max)
+
+    @property
+    def remaining(self):
+        return max(self.max - self.index, 0)
 
     def start(self):
-        self.delta = 0
-        self.update_stats()
-        self.update()
-
-    def next(self, n=1):
-        prev = self.index
-        self.index = min(self.index + n, self.max)
-        self.delta = self.index - prev
-        self.update_stats()
         self.update()
 
     def goto(self, index):
-        index = min(index, self.max)
-        delta = index - self.index
-        if delta <= 0 and not self.backtrack:
-            return
-
-        self.index = index
-        self.delta = delta
-        self.update_stats()
-        self.update()
+        incr = index - self.index
+        self.next(incr)
 
     def iter(self, it):
         try:
