@@ -37,3 +37,7 @@ for i in range(100):
     bar.goto(randint(0, 100))
     sleep(0.1)
 bar.finish()
+
+with Spinner('ThreadedSpinner '):
+    sleep(3)
+print()

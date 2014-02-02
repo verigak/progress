@@ -88,6 +88,16 @@ For actions with an unknown number of steps you can use a spinner. ::
         # Do some work
         spinner.next()
 
+Spinners can run in the background, for example, during a long, blocking
+call. They will automatically be advanced with a customizable frequency
+controlled by the ``frequency`` keyword argument (0.1 seconds by default)
+This behvaior is available using the ``with`` statement. ::
+
+    from progress.spinner import Spinner
+
+    with Spinner('Loading ', frequency=0.1):
+        # Do some work, or make a blocking call
+
 There are 4 predefined spinners:
 
 - Spinner

@@ -19,6 +19,7 @@ from datetime import timedelta
 from math import ceil
 from sys import stderr
 from time import time
+from threading import Thread, Event
 
 
 __version__ = '1.2'
@@ -77,6 +78,24 @@ class Infinite(object):
             yield x
             self.next()
         self.finish()
+
+    def _run(self):
+        frequency = getattr(self, 'frequency', 0.1)
+        while not self._event.is_set():
+            self.next()
+            self._event.wait(frequency)
+    
+    def __enter__(self):
+        self.start()
+        self._event = Event()
+        self._thread = Thread(target=self._run)
+        self._thread.start()
+
+    def __exit__(self, exc_type, exc_value, exc_tb):
+        self._event.set()
+        self._thread.join()
+        self.finish()
+
 
 
 class Progress(Infinite):
