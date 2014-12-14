@@ -13,7 +13,9 @@ There are 6 progress bars to choose from:
 - IncrementalBar
 - ShadyBar
 
-To use them, just call ``next`` to advance and ``finish`` to finish. ::
+To use them, just call ``next`` to advance and ``finish`` to finish:
+
+.. code-block:: python
 
     from progress.bar import Bar
 
@@ -28,13 +30,17 @@ The result will be a bar like the following: ::
     Processing |#############                   | 42/100
 
 To simplify the common case where the work is done in an iterator, you can
-use the ``iter`` method. ::
+use the ``iter`` method:
+
+.. code-block:: python
 
     for i in Bar('Processing').iter(it):
         # Do some work
 
 Progress bars are very customizable, you can change their width, their fill
-character, their suffix and more. ::
+character, their suffix and more:
+
+.. code-block:: python
 
     bar = Bar('Loading', fill='@', suffix='%(percent)d%%')
 
@@ -60,14 +66,18 @@ eta_td      eta as a timedelta (useful for printing as a string)
 ==========  ================================
 
 Instead of passing all configuration options on instatiation, you can create
-your custom subclass. ::
+your custom subclass:
+
+.. code-block:: python
 
     class FancyBar(Bar):
         message = 'Loading'
         fill = '*'
         suffix = '%(percent).1f%% - %(eta)ds'
 
-You can also override any of the arguments or create your own. ::
+You can also override any of the arguments or create your own:
+
+.. code-block:: python
 
     class SlowBar(Bar):
         suffix = '%(remaining_hours)d hours remaining'
@@ -79,7 +89,9 @@ You can also override any of the arguments or create your own. ::
 Spinners
 ========
 
-For actions with an unknown number of steps you can use a spinner. ::
+For actions with an unknown number of steps you can use a spinner:
+
+.. code-block::
 
     from progress.spinner import Spinner
     
@@ -98,5 +110,5 @@ There are 4 predefined spinners:
 Other
 =====
 
-Thera are a number of other classes available too, please check the source or
+There are a number of other classes available too, please check the source or
 subclass one of them to create your own.
