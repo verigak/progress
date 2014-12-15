@@ -6,12 +6,12 @@ Bars
 
 There are 6 progress bars to choose from:
 
-- Bar
-- ChargingBar
-- FillingSquaresBar
-- FillingCirclesBar
-- IncrementalBar
-- ShadyBar
+- ``Bar``
+- ``ChargingBar``
+- ``FillingSquaresBar``
+- ``FillingCirclesBar``
+- ``IncrementalBar``
+- ``ShadyBar``
 
 To use them, just call ``next`` to advance and ``finish`` to finish. ::
 
@@ -90,10 +90,10 @@ For actions with an unknown number of steps you can use a spinner. ::
 
 There are 4 predefined spinners:
 
-- Spinner
-- PieSpinner
-- MoonSpinner
-- LineSpinner
+- ``Spinner``
+- ``PieSpinner``
+- ``MoonSpinner``
+- ``LineSpinner``
 
 Other
 =====
