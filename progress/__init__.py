@@ -27,6 +27,7 @@ __version__ = '1.2'
 class Infinite(object):
     file = stderr
     sma_window = 10
+    sma_delta  = 0.3
 
     def __init__(self, *args, **kwargs):
         self.index = 0
@@ -67,7 +68,20 @@ class Infinite(object):
 
     def next(self, n=1):
         self._ts = time()
-        self._dt.append({'t': self._ts, 'n': n})
+
+        item = {'t': self._ts, 'n': 0}
+        if len(self._dt):
+            old_item = self._dt.pop()
+            if self._ts > item['t'] + self.sma_delta:
+                # Already reached timeout, we are not going to
+                # touch this item.  Return it back.
+                self._dt.append(item)
+            else:
+                item = old_item
+
+        item['n'] = item['n'] + n
+
+        self._dt.append(item)
         self._in_window = self._in_window + n
 
         if len(self._dt) > self.sma_window:
