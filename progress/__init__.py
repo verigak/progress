@@ -32,7 +32,8 @@ class Infinite(object):
         self.index = 0
         self.start_ts = time()
         self._ts = self.start_ts
-        self._dt = deque(maxlen=self.sma_window)
+        self._dt = deque()
+        self._in_window = 0
         for key, val in kwargs.items():
             setattr(self, key, val)
 
@@ -43,7 +44,9 @@ class Infinite(object):
 
     @property
     def avg(self):
-        return sum(self._dt) / len(self._dt) if self._dt else 0
+        if not self._in_window:
+            return 0
+        return (self._ts - self._dt[0]['t']) / self._in_window
 
     @property
     def elapsed(self):
@@ -63,11 +66,13 @@ class Infinite(object):
         pass
 
     def next(self, n=1):
-        if n > 0:
-            now = time()
-            dt = (now - self._ts) / n
-            self._dt.append(dt)
-            self._ts = now
+        self._ts = time()
+        self._dt.append({'t': self._ts, 'n': n})
+        self._in_window = self._in_window + n
+
+        if len(self._dt) > self.sma_window:
+            item = self._dt.popleft()
+            self._in_window = self._in_window - item['n']
 
         self.index = self.index + n
         self.update()
