@@ -65,15 +65,15 @@ class IncrementalBar(Bar):
 
     def update(self):
         nphases = len(self.phases)
-        expanded_length = int(nphases * self.width * self.progress)
-        filled_length = int(self.width * self.progress)
-        empty_length = self.width - filled_length
-        phase = expanded_length - (filled_length * nphases)
+        filled_len = self.width * self.progress
+        nfull = int(filled_len)                      # Number of full chars
+        phase = int((filled_len - nfull) * nphases)  # Phase of last char
+        nempty = self.width - nfull                  # Number of empty chars
 
         message = self.message % self
-        bar = self.phases[-1] * filled_length
+        bar = self.phases[-1] * nfull
         current = self.phases[phase] if phase > 0 else ''
-        empty = self.empty_fill * max(0, empty_length - len(current))
+        empty = self.empty_fill * max(0, nempty - len(current))
         suffix = self.suffix % self
         line = ''.join([message, self.bar_prefix, bar, current, empty,
                         self.bar_suffix, suffix])
