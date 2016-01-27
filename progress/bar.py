@@ -65,8 +65,8 @@ class IncrementalBar(Bar):
 
     def update(self):
         nphases = len(self.phases)
-        expanded_length = int(nphases * self.width * self.progress)
-        filled_length = int(self.width * self.progress)
+        expanded_length = int(nphases * self.width * self.index / self.max)
+        filled_length = int(self.width * self.index / self.max)
         empty_length = self.width - filled_length
         phase = expanded_length - (filled_length * nphases)
 
