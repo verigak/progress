@@ -1,6 +1,14 @@
 Easy progress reporting for Python
 ==================================
 
+|pypi|
+
+|demo|
+
+.. |pypi| image:: https://img.shields.io/pypi/v/progress.svg
+.. |demo| image:: https://raw.github.com/verigak/progress/master/demo.gif
+   :alt: Demo
+
 Bars
 ----
 
@@ -94,7 +102,7 @@ For actions with an unknown number of steps you can use a spinner:
 .. code-block:: python
 
     from progress.spinner import Spinner
-    
+
     spinner = Spinner('Loading ')
     while state != 'FINISHED':
         # Do some work
@@ -107,8 +115,15 @@ There are 4 predefined spinners:
 - ``MoonSpinner``
 - ``LineSpinner``
 
+
 Other
 =====
 
 There are a number of other classes available too, please check the source or
 subclass one of them to create your own.
+
+
+License
+=======
+
+progress is licensed under ISC
