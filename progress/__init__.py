@@ -24,15 +24,42 @@ from time import time
 __version__ = '1.2'
 
 
+"""
+The moving average is calculated by this formula:
+
+  _in_window / (time() - oldest_timestamp_in_window)
+
+Because the frequency of calling next() callback might be rather very high,
+doing the naive next()/avg() implementation leads to issues (PR 23):
+
+  def next(N):
+     t = time()
+     delta = N / (t - last_timestamp) # very small number
+     _dt.append(delta)
+     _avg = sum(_dt)/len(_dt)
+     last_timestamp = t
+
+.. Even if 'len(_dt)' was 1000, the time frame can be very small (e.g. file
+download for next(N=8k in bytes) on 1Gbit network.  With the mentioned formula
+the window size is limited by *time*, not by the next() callback frequency.
+
+The moving average is calculated -at most- for the last 3 seconds by default:
+
+  sma_window x sma_delta = 10 x 0.3 = 3s
+
+Users can change this default window size, when needed.
+"""
 class Infinite(object):
     file = stderr
-    sma_window = 10
+    sma_window = 10     # Size of the window -- (max) number of sma_delta items.
+    sma_delta  = 0.3    # Time-length of one item in window, in seconds.
 
     def __init__(self, *args, **kwargs):
         self.index = 0
         self.start_ts = time()
         self._ts = self.start_ts
-        self._dt = deque(maxlen=self.sma_window)
+        self._dt = deque()
+        self._in_window = 0
         for key, val in kwargs.items():
             setattr(self, key, val)
 
@@ -43,7 +70,9 @@ class Infinite(object):
 
     @property
     def avg(self):
-        return sum(self._dt) / len(self._dt) if self._dt else 0
+        if not self._in_window:
+            return 0
+        return (self._ts - self._dt[0]['t']) / self._in_window
 
     @property
     def elapsed(self):
@@ -63,11 +92,26 @@ class Infinite(object):
         pass
 
     def next(self, n=1):
-        if n > 0:
-            now = time()
-            dt = (now - self._ts) / n
-            self._dt.append(dt)
-            self._ts = now
+        self._ts = time()
+
+        item = {'t': self._ts, 'n': 0}
+        if len(self._dt):
+            old_item = self._dt.pop()
+            if self._ts > old_item['t'] + self.sma_delta:
+                # Already reached timeout, we are not going to
+                # touch this item.  Return it back.
+                self._dt.append(old_item)
+            else:
+                item = old_item
+
+        item['n'] = item['n'] + n
+
+        self._dt.append(item)
+        self._in_window = self._in_window + n
+
+        if len(self._dt) > self.sma_window:
+            item = self._dt.popleft()
+            self._in_window = self._in_window - item['n']
 
         self.index = self.index + n
         self.update()
