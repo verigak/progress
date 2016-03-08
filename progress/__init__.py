@@ -33,7 +33,7 @@ class Infinite(object):
         self.index = 0
         self.start_ts = time()
         self._ts = self.start_ts
-        self._dt = deque(maxlen=self.sma_window)
+        self._xput = deque(maxlen=self.sma_window)
         self._pending = 0
         for key, val in kwargs.items():
             setattr(self, key, val)
@@ -45,7 +45,8 @@ class Infinite(object):
 
     @property
     def avg(self):
-        return sum(self._dt) / len(self._dt) if self._dt else 0
+        """Average throughput"""
+        return sum(self._xput) / len(self._xput) if self._xput else 0
 
     @property
     def elapsed(self):
@@ -71,7 +72,7 @@ class Infinite(object):
             if dt < self.time_threshold:
                 self._pending += n
             else:
-                self._dt.append(dt / (n + self._pending))
+                self._xput.append((n + self._pending) / dt)
                 self._ts = now
                 self._pending = 0
 
@@ -94,7 +95,8 @@ class Progress(Infinite):
 
     @property
     def eta(self):
-        return int(ceil(self.avg * self.remaining))
+        avg = self.avg
+        return int(ceil(self.remaining / avg)) if avg else 0
 
     @property
     def eta_td(self):
