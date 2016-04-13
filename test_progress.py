@@ -6,7 +6,7 @@ import random
 import time
 
 from progress.bar import (Bar, ChargingBar, FillingSquaresBar,
-                          FillingCirclesBar, IncrementalBar, ShadyBar)
+                          FillingCirclesBar, IncrementalBar, ShadyBar, Random)
 from progress.spinner import Spinner, PieSpinner, MoonSpinner, LineSpinner
 from progress.counter import Counter, Countdown, Stack, Pie
 
@@ -39,8 +39,7 @@ for singleton in (Counter, Countdown, Stack, Pie):
         sleep()
     print()
 
-bar = IncrementalBar('Random', suffix='%(index)d')
-for i in range(100):
-    bar.goto(random.randint(0, 100))
+bar = Random(Random.__name__)
+for i in bar.iter(range(100)):
     sleep()
-bar.finish()
+print()
