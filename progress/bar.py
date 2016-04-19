@@ -85,15 +85,39 @@ class ShadyBar(IncrementalBar):
     phases = (' ', '░', '▒', '▓', '█')
 
 
-class Random(WritelnMixin, Infinite):
-    width = 32
-    message = ''
+class AdaptiveBar(Bar):
+    phases = (' ', '▏', '▎', '▍', '▌', '▋', '▊', '▉', '█')
+    suffix = '%(percent)d%%'
+
+    def update(self):
+        nphases = len(self.phases)
+        filled_len = self.width * self.progress
+        nfull = int(filled_len)                      # Number of full chars
+        phase = int((filled_len - nfull) * nphases)  # Phase of last char
+        nempty = self.width - nfull                  # Number of empty chars
+
+        message = self.message % self
+        bar = self.phases[-1] * nfull
+        current = self.phases[phase] if phase > 0 else ''
+        empty = self.empty_fill * max(0, nempty - len(current))
+        suffix = self.suffix % self
+        line = ''.join([message, self.bar_prefix, bar, current, empty,
+                        self.bar_suffix, suffix])
+        self.writeln(line)
+
+    def finish(self):
+        self.index = 100
+        message = self.message % self
+        # suffix = self.suffix % self
+        suffix = "Done."
+        bar = bar = self.phases[-1] * self.width
+        line = ''.join([message, self.bar_prefix, bar, self.bar_suffix, suffix])
+        self.writeln(line)
+
+
+class Random(AdaptiveBar):
     suffix = '%(index)d'
-    bar_prefix = ' |'
-    bar_suffix = '| '
-    empty_fill = ' '
     fill = '█'
-    hide_cursor = True
 
     def update(self):
         self.index = random.randint(0, 100)
@@ -105,14 +129,5 @@ class Random(WritelnMixin, Infinite):
         empty = self.empty_fill * empty_length
         suffix = self.suffix % self
         line = ''.join([message, self.bar_prefix, bar, empty, self.bar_suffix,
-                        suffix])
-        self.writeln(line)
-
-    def finish(self):
-        self.index = 100
-        message = self.message % self
-        suffix = self.suffix % self
-        bar = self.fill * self.width
-        line = ''.join([message, self.bar_prefix, bar, self.bar_suffix,
                         suffix])
         self.writeln(line)
