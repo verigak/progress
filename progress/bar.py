@@ -113,21 +113,3 @@ class AdaptiveBar(Bar):
         bar = bar = self.phases[-1] * self.width
         line = ''.join([message, self.bar_prefix, bar, self.bar_suffix, suffix])
         self.writeln(line)
-
-
-class Random(AdaptiveBar):
-    suffix = '%(index)d'
-    fill = '█'
-
-    def update(self):
-        self.index = random.randint(0, 100)
-        filled_length = int(self.width * self.index / 100)
-        empty_length = self.width - filled_length
-
-        message = self.message % self
-        bar = self.fill * filled_length
-        empty = self.empty_fill * empty_length
-        suffix = self.suffix % self
-        line = ''.join([message, self.bar_prefix, bar, empty, self.bar_suffix,
-                        suffix])
-        self.writeln(line)
