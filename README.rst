@@ -12,7 +12,7 @@ Easy progress reporting for Python
 Bars
 ----
 
-There are 7 progress bars to choose from:
+There are 6 progress bars to choose from:
 
 - ``Bar``
 - ``ChargingBar``
@@ -20,7 +20,6 @@ There are 7 progress bars to choose from:
 - ``FillingCirclesBar``
 - ``IncrementalBar``
 - ``ShadyBar``
-- ``Random``
 
 To use them, just call ``next`` to advance and ``finish`` to finish:
 
