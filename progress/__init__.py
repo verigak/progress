@@ -73,12 +73,17 @@ class Infinite(object):
         self.update()
 
     def iter(self, it):
-        try:
+        with self:
             for x in it:
                 yield x
                 self.next()
-        finally:
-            self.finish()
+
+    def __enter__(self):
+        self.start()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.finish()
 
 
 class Progress(Infinite):
@@ -119,9 +124,7 @@ class Progress(Infinite):
         except TypeError:
             pass
 
-        try:
+        with self:
             for x in it:
                 yield x
                 self.next()
-        finally:
-            self.finish()
