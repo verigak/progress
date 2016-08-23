@@ -65,21 +65,6 @@ class Infinite(object):
     def finish(self):
         pass
 
-    '''
-    def next(self, n=1):
-        if n > 0:
-            now = time()
-            dt = now - self._ts
-            if dt < self.time_threshold:
-                self._pending += n
-            else:
-                self._xput.append((n + self._pending) / dt)
-                self._ts = now
-                self._pending = 0
-
-        self.index = self.index + n
-        self.update()
-    '''
 
     def next(self, n=1):
         if n <= 0: return
@@ -93,7 +78,7 @@ class Infinite(object):
             self._pending = 0
             self.update()
         self.index = self.index + n
-        
+
 
     def iter(self, it):
         try:
