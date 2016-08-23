@@ -73,7 +73,7 @@ class Infinite(object):
         self._pending += n
         #avoid performing computationally intensive tasks more than 1/dt (10 by default) times a second
         if dt > self.time_threshold:
-            self._xput.append((n + self._pending) / dt)
+            self._xput.append((self._pending) / dt)
             self._ts = now
             self._pending = 0
             self.update()
