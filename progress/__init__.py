@@ -65,6 +65,7 @@ class Infinite(object):
     def finish(self):
         pass
 
+    '''
     def next(self, n=1):
         if n > 0:
             now = time()
@@ -78,6 +79,21 @@ class Infinite(object):
 
         self.index = self.index + n
         self.update()
+    '''
+
+    def next(self, n=1):
+        if n <= 0: return
+        now = time()
+        dt = now - self._ts
+        self._pending += n
+        #avoid performing computationally intensive tasks more than 1/dt (10 by default) times a second
+        if dt > self.time_threshold:
+            self._xput.append((n + self._pending) / dt)
+            self._ts = now
+            self._pending = 0
+            self.update()
+        self.index = self.index + n
+        
 
     def iter(self, it):
         try:
@@ -97,7 +113,8 @@ class Progress(Infinite):
     def eta(self):
         #avg = self.avg
         #return int(ceil(self.remaining / avg)) if avg else 0
-        return int(ceil((self.max - self.index)/self.index * self.elapsed))
+        #return ceiling(items remaining * time per item so far)
+        return int(ceil((self.max - self.index) * self.elapsed/self.index))
 
     @property
     def eta_td(self):
