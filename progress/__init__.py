@@ -65,20 +65,21 @@ class Infinite(object):
     def finish(self):
         pass
 
-
     def next(self, n=1):
-        if n <= 0: return
+        if n <= 0:
+            return
         now = time()
         dt = now - self._ts
-        self._pending += n
-        #avoid performing computationally intensive tasks more than 1/dt (10 by default) times a second
-        if dt > self.time_threshold:
-            self._xput.append((self._pending) / dt)
+        if dt < self.time_threshold:
+            self._pending += n
+        else:
+            #   avoid performing computationally intensive update task
+            #       more than 1/dt (10 by default) times a second
+            self._xput.append((self._pending + n) / dt)
             self._ts = now
             self._pending = 0
             self.update()
         self.index = self.index + n
-
 
     def iter(self, it):
         try:
@@ -96,8 +97,9 @@ class Progress(Infinite):
 
     @property
     def eta(self):
-        if not self.index: return 0
-        return int(ceil((self.max - self.index) * self.elapsed/self.index))
+        if not self.index:
+            return 0
+        return int(ceil(self.remaining * self.elapsed/self.index))
 
     @property
     def eta_td(self):
