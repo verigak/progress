@@ -66,10 +66,10 @@ max         maximum value
 remaining   max - index
 progress    index / max
 percent     progress * 100
-avg         simple moving average time per item (in seconds)
+avg         simple moving average items per second
 elapsed     elapsed time in seconds
 elapsed_td  elapsed as a timedelta (useful for printing as a string)
-eta         avg * remaining
+eta         remaining / avg
 eta_td      eta as a timedelta (useful for printing as a string)
 ==========  ================================
 
