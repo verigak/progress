@@ -97,8 +97,9 @@ class Progress(Infinite):
 
     @property
     def eta(self):
-        avg = self.avg
-        return int(ceil(self.remaining / avg)) if avg else 0
+        if not self.index:
+            return 0
+        return int(ceil(self.remaining * self.elapsed/self.index))
 
     @property
     def eta_td(self):
