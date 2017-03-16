@@ -6,7 +6,8 @@ import random
 import time
 
 from progress.bar import (Bar, ChargingBar, FillingSquaresBar,
-                          FillingCirclesBar, IncrementalBar, ShadyBar)
+                          FillingCirclesBar, IncrementalBar, PixelBar,
+                          ShadyBar)
 from progress.spinner import Spinner, PieSpinner, MoonSpinner, LineSpinner
 from progress.counter import Counter, Countdown, Stack, Pie
 
@@ -23,7 +24,7 @@ for bar_cls in (Bar, ChargingBar, FillingSquaresBar, FillingCirclesBar):
     for i in bar.iter(range(200)):
         sleep()
 
-for bar_cls in (IncrementalBar, ShadyBar):
+for bar_cls in (IncrementalBar, PixelBar, ShadyBar):
     suffix = '%(percent)d%% [%(elapsed_td)s / %(eta_td)s]'
     bar = bar_cls(bar_cls.__name__, suffix=suffix)
     for i in bar.iter(range(200)):
