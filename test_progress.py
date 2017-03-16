@@ -8,7 +8,8 @@ import time
 from progress.bar import (Bar, ChargingBar, FillingSquaresBar,
                           FillingCirclesBar, IncrementalBar, PixelBar,
                           ShadyBar)
-from progress.spinner import Spinner, PieSpinner, MoonSpinner, LineSpinner
+from progress.spinner import (Spinner, PieSpinner, MoonSpinner, LineSpinner,
+                              PixelSpinner)
 from progress.counter import Counter, Countdown, Stack, Pie
 
 
@@ -30,7 +31,7 @@ for bar_cls in (IncrementalBar, PixelBar, ShadyBar):
     for i in bar.iter(range(200)):
         sleep()
 
-for spin in (Spinner, PieSpinner, MoonSpinner, LineSpinner):
+for spin in (Spinner, PieSpinner, MoonSpinner, LineSpinner, PixelSpinner):
     for i in spin(spin.__name__ + ' ').iter(range(100)):
         sleep()
     print()

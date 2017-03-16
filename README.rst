@@ -109,12 +109,13 @@ For actions with an unknown number of steps you can use a spinner:
         # Do some work
         spinner.next()
 
-There are 4 predefined spinners:
+There are 5 predefined spinners:
 
 - ``Spinner``
 - ``PieSpinner``
 - ``MoonSpinner``
 - ``LineSpinner``
+- ``PixelSpinner``
 
 
 Other
