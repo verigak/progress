@@ -27,14 +27,13 @@ __version__ = '1.2'
 class Infinite(object):
     file = stderr
     sma_window = 10         # Simple Moving Average window
-    time_threshold = 0.1    # Minimum distance between data points (in seconds)
 
     def __init__(self, *args, **kwargs):
         self.index = 0
         self.start_ts = time()
+        self.avg = 0
         self._ts = self.start_ts
         self._xput = deque(maxlen=self.sma_window)
-        self._pending = 0
         for key, val in kwargs.items():
             setattr(self, key, val)
 
@@ -44,17 +43,17 @@ class Infinite(object):
         return getattr(self, key, None)
 
     @property
-    def avg(self):
-        """Average throughput"""
-        return sum(self._xput) / len(self._xput) if self._xput else 0
-
-    @property
     def elapsed(self):
         return int(time() - self.start_ts)
 
     @property
     def elapsed_td(self):
         return timedelta(seconds=self.elapsed)
+
+    def update_avg(self, n, dt):
+        if n > 0:
+            self._xput.append(dt / n)
+            self.avg = sum(self._xput) / len(self._xput)
 
     def update(self):
         pass
@@ -66,20 +65,12 @@ class Infinite(object):
         pass
 
     def next(self, n=1):
-        if n <= 0:
-            return
         now = time()
         dt = now - self._ts
-        if dt < self.time_threshold:
-            self._pending += n
-        else:
-            #   avoid performing computationally intensive update task
-            #       more than 1/dt (10 by default) times a second
-            self._xput.append((self._pending + n) / dt)
-            self._ts = now
-            self._pending = 0
-            self.update()
+        self.update_avg(n, dt)
+        self._ts = now
         self.index = self.index + n
+        self.update()
 
     def iter(self, it):
         try:
@@ -97,8 +88,7 @@ class Progress(Infinite):
 
     @property
     def eta(self):
-        avg = self.avg
-        return int(ceil(self.remaining / avg)) if avg else 0
+        return int(ceil(self.avg * self.remaining))
 
     @property
     def eta_td(self):
