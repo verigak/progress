@@ -39,3 +39,6 @@ class MoonSpinner(Spinner):
 
 class LineSpinner(Spinner):
     phases = ['⎺', '⎻', '⎼', '⎽', '⎼', '⎻']
+
+class PixelSpinner(Spinner):
+    phases = ['⣾','⣷', '⣯', '⣟', '⡿', '⢿', '⣻', '⣽']

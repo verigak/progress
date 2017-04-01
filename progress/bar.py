@@ -80,5 +80,9 @@ class IncrementalBar(Bar):
         self.writeln(line)
 
 
+class PixelBar(IncrementalBar):
+    phases = ('⡀', '⡄', '⡆', '⡇', '⣇', '⣧', '⣷', '⣿')
+
+
 class ShadyBar(IncrementalBar):
     phases = (' ', '░', '▒', '▓', '█')
