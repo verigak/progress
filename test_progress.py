@@ -44,3 +44,7 @@ for i in range(100):
     bar.goto(random.randint(0, 100))
     sleep()
 bar.finish()
+
+with Spinner('ThreadedSpinner '):
+    sleep(3)
+print()
