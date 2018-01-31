@@ -60,7 +60,7 @@ class WritelnMixin(object):
 
     def clearln(self):
         if self.file.isatty():
-            print('\r' if sys.platform.startswith('win') else '\r\x1b[K', end='', file=self.file)
+            print('\r\x1b[K', end='', file=self.file)
 
     def writeln(self, line):
         if self.file.isatty():
