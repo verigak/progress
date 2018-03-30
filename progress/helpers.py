@@ -28,23 +28,26 @@ class WriteMixin(object):
         if message:
             self.message = message
 
-        if self.file and self.file.isatty():
-            if self.hide_cursor:
-                print(HIDE_CURSOR, end='', file=self.file)
-            print(self.message, end='', file=self.file)
-            self.file.flush()
+        if self.file: 
+            if self.file.isatty():
+                if self.hide_cursor:
+                    print(HIDE_CURSOR, end='', file=self.file)
+                print(self.message, end='', file=self.file)
+                self.file.flush()
 
     def write(self, s):
-        if self.file and self.file.isatty():
-            b = '\b' * self._width
-            c = s.ljust(self._width)
-            print(b + c, end='', file=self.file)
-            self._width = max(self._width, len(s))
-            self.file.flush()
+        if self.file :
+            if self.file.isatty():
+                b = '\b' * self._width
+                c = s.ljust(self._width)
+                print(b + c, end='', file=self.file)
+                self._width = max(self._width, len(s))
+                self.file.flush()
 
     def finish(self):
-        if self.file and self.file.isatty() and self.hide_cursor:
-            print(SHOW_CURSOR, end='', file=self.file)
+        if self.file:
+            if self.file.isatty() and self.hide_cursor:
+                print(SHOW_CURSOR, end='', file=self.file)
 
 
 class WritelnMixin(object):
@@ -55,24 +58,28 @@ class WritelnMixin(object):
         if message:
             self.message = message
 
-        if self.file and self.file.isatty() and self.hide_cursor:
-            print(HIDE_CURSOR, end='', file=self.file)
+        if self.file:
+            if self.file.isatty() and self.hide_cursor:
+                print(HIDE_CURSOR, end='', file=self.file)
 
     def clearln(self):
-        if self.file and self.file.isatty():
-            print('\r\x1b[K', end='', file=self.file)
+        if self.file:
+            if self.file.isatty():
+                print('\r\x1b[K', end='', file=self.file)
 
     def writeln(self, line):
-        if self.file and self.file.isatty():
-            self.clearln()
-            print(line, end='', file=self.file)
-            self.file.flush()
+        if self.file:
+            if self.file.isatty():
+                self.clearln()
+                print(line, end='', file=self.file)
+                self.file.flush()
 
     def finish(self):
-        if self.file and self.file.isatty():
-            print(file=self.file)
-            if self.hide_cursor:
-                print(SHOW_CURSOR, end='', file=self.file)
+        if self.file:
+            if self.file.isatty():
+                print(file=self.file)
+                if self.hide_cursor:
+                    print(SHOW_CURSOR, end='', file=self.file)
 
 
 from signal import signal, SIGINT
