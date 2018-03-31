@@ -61,13 +61,15 @@ class WritelnMixin(object):
             self.message = message
 
         if self.file:
-            if self.file.isatty() and self.hide_cursor:
-                print(HIDE_CURSOR, end='', file=self.file)
+            if 'isatty' in dir (self.file):
+                if self.file.isatty() and self.hide_cursor:
+                    print(HIDE_CURSOR, end='', file=self.file)
 
     def clearln(self):
         if self.file:
-            if self.file.isatty():
-                print('\r\x1b[K', end='', file=self.file)
+            if 'isatty' in dir (self.file):
+                if self.file.isatty():
+                    print('\r\x1b[K', end='', file=self.file)
 
     def writeln(self, line):
         if self.file:
