@@ -30,10 +30,11 @@ class WriteMixin(object):
 
         if self.file: 
             if self.file.isatty():
-                if self.hide_cursor:
-                    print(HIDE_CURSOR, end='', file=self.file)
-                print(self.message, end='', file=self.file)
-                self.file.flush()
+                if 'isatty' in dir (self.file):
+                    if self.hide_cursor:
+                        print(HIDE_CURSOR, end='', file=self.file)
+                    print(self.message, end='', file=self.file)
+                    self.file.flush()
 
     def write(self, s):
         if self.file :
