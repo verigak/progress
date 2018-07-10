@@ -20,6 +20,7 @@ SHOW_CURSOR = '\x1b[?25h'
 
 
 class WriteMixin(object):
+    check_tty = True
     hide_cursor = False
 
     def __init__(self, message=None, **kwargs):
@@ -28,14 +29,14 @@ class WriteMixin(object):
         if message:
             self.message = message
 
-        if self.file and self.file.isatty():
+        if self.file and self.is_tty():
             if self.hide_cursor:
                 print(HIDE_CURSOR, end='', file=self.file)
             print(self.message, end='', file=self.file)
             self.file.flush()
 
     def write(self, s):
-        if self.file and self.file.isatty():
+        if self.file and self.is_tty():
             b = '\b' * self._width
             c = s.ljust(self._width)
             print(b + c, end='', file=self.file)
@@ -43,11 +44,15 @@ class WriteMixin(object):
             self.file.flush()
 
     def finish(self):
-        if self.file and self.file.isatty() and self.hide_cursor:
+        if self.file and self.is_tty() and self.hide_cursor:
             print(SHOW_CURSOR, end='', file=self.file)
+
+    def is_tty(self):
+        return self.file.isatty() if self.check_tty else True
 
 
 class WritelnMixin(object):
+    check_tty = True
     hide_cursor = False
 
     def __init__(self, message=None, **kwargs):
@@ -55,24 +60,27 @@ class WritelnMixin(object):
         if message:
             self.message = message
 
-        if self.file and self.file.isatty() and self.hide_cursor:
+        if self.file and self.is_tty() and self.hide_cursor:
             print(HIDE_CURSOR, end='', file=self.file)
 
     def clearln(self):
-        if self.file and self.file.isatty():
+        if self.file and self.is_tty():
             print('\r\x1b[K', end='', file=self.file)
 
     def writeln(self, line):
-        if self.file and self.file.isatty():
+        if self.file and self.is_tty():
             self.clearln()
             print(line, end='', file=self.file)
             self.file.flush()
 
     def finish(self):
-        if self.file and self.file.isatty():
+        if self.file and self.is_tty():
             print(file=self.file)
             if self.hide_cursor:
                 print(SHOW_CURSOR, end='', file=self.file)
+
+    def is_tty(self):
+        return self.file.isatty() if self.check_tty else True
 
 
 from signal import signal, SIGINT
