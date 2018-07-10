@@ -37,9 +37,8 @@ class WriteMixin(object):
 
     def write(self, s):
         if self.file and self.is_tty():
-            b = '\b' * self._width
-            c = s.ljust(self._width)
-            print(b + c, end='', file=self.file)
+            line = self.message + s.ljust(self._width)
+            print('\r' + line, end='', file=self.file)
             self._width = max(self._width, len(s))
             self.file.flush()
 
