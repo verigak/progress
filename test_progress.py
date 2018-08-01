@@ -27,9 +27,10 @@ for bar_cls in (Bar, ChargingBar, FillingSquaresBar, FillingCirclesBar):
 
 for bar_cls in (IncrementalBar, PixelBar, ShadyBar):
     suffix = '%(percent)d%% [%(elapsed_td)s / %(eta)d / %(eta_td)s]'
-    bar = bar_cls(bar_cls.__name__, suffix=suffix)
-    for i in bar.iter(range(200)):
-        sleep()
+    with bar_cls(bar_cls.__name__, suffix=suffix, max=200) as bar:
+        for i in range(200):
+            bar.next()
+            sleep()
 
 for spin in (Spinner, PieSpinner, MoonSpinner, LineSpinner, PixelSpinner):
     for i in spin(spin.__name__ + ' ').iter(range(100)):

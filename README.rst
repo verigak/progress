@@ -34,6 +34,17 @@ To use them, just call ``next`` to advance and ``finish`` to finish:
         bar.next()
     bar.finish()
 
+or use any bar of this class as a context manager:
+
+.. code-block:: python
+
+    from progress.bar import Bar
+
+    with Bar('Processing', max=20) as bar:
+        for i in range(20):
+            # Do some work
+            bar.next()
+
 The result will be a bar like the following: ::
 
     Processing |#############                   | 42/100
