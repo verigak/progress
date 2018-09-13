@@ -12,7 +12,7 @@
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-from __future__ import division
+from __future__ import division, print_function
 
 from collections import deque
 from datetime import timedelta
@@ -23,12 +23,17 @@ from time import time
 
 __version__ = '1.4'
 
+HIDE_CURSOR = '\x1b[?25l'
+SHOW_CURSOR = '\x1b[?25h'
+
 
 class Infinite(object):
     file = stderr
     sma_window = 10         # Simple Moving Average window
+    check_tty = True
+    hide_cursor = True
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, message='', **kwargs):
         self.index = 0
         self.start_ts = time()
         self.avg = 0
@@ -36,6 +41,15 @@ class Infinite(object):
         self._xput = deque(maxlen=self.sma_window)
         for key, val in kwargs.items():
             setattr(self, key, val)
+
+        self._width = 0
+        self.message = message
+
+        if self.file and self.is_tty():
+            if self.hide_cursor:
+                print(HIDE_CURSOR, end='', file=self.file)
+            print(self.message, end='', file=self.file)
+            self.file.flush()
 
     def __getitem__(self, key):
         if key.startswith('_'):
@@ -61,8 +75,31 @@ class Infinite(object):
     def start(self):
         pass
 
+    def clearln(self):
+        if self.file and self.is_tty():
+            print('\r\x1b[K', end='', file=self.file)
+
+    def write(self, s):
+        if self.file and self.is_tty():
+            line = self.message + s.ljust(self._width)
+            print('\r' + line, end='', file=self.file)
+            self._width = max(self._width, len(s))
+            self.file.flush()
+
+    def writeln(self, line):
+        if self.file and self.is_tty():
+            self.clearln()
+            print(line, end='', file=self.file)
+            self.file.flush()
+
     def finish(self):
-        pass
+        if self.file and self.is_tty():
+            print(file=self.file)
+            if self.hide_cursor:
+                print(SHOW_CURSOR, end='', file=self.file)
+
+    def is_tty(self):
+        return self.file.isatty() if self.check_tty else True
 
     def next(self, n=1):
         now = time()

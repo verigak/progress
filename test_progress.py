@@ -35,12 +35,10 @@ for bar_cls in (IncrementalBar, PixelBar, ShadyBar):
 for spin in (Spinner, PieSpinner, MoonSpinner, LineSpinner, PixelSpinner):
     for i in spin(spin.__name__ + ' ').iter(range(100)):
         sleep()
-    print()
 
 for singleton in (Counter, Countdown, Stack, Pie):
     for i in singleton(singleton.__name__ + ' ').iter(range(100)):
         sleep()
-    print()
 
 bar = IncrementalBar('Random', suffix='%(index)d')
 for i in range(100):
