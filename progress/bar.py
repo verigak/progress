@@ -38,7 +38,7 @@ class Bar(Progress):
         empty = self.empty_fill * empty_length
         suffix = self.suffix % self
         line = ''.join([message, self.bar_prefix, bar, empty, self.bar_suffix,
-                        suffix])
+                        suffix]).encode('utf-8')
         self.writeln(line)
 
 
