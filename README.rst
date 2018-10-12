@@ -6,6 +6,7 @@ Easy progress reporting for Python
 |demo|
 
 .. |pypi| image:: https://img.shields.io/pypi/v/progress.svg
+   :target: https://pypi.org/project/progress/
 .. |demo| image:: https://raw.github.com/verigak/progress/master/demo.gif
    :alt: Demo
 
@@ -127,6 +128,15 @@ There are 5 predefined spinners:
 - ``MoonSpinner``
 - ``LineSpinner``
 - ``PixelSpinner``
+
+Installation
+============
+
+Download from PyPi
+
+.. code-block:: shell
+
+    pip install progress
 
 
 Other
