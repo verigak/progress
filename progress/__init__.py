@@ -63,6 +63,10 @@ class Infinite(object):
     @property
     def elapsed_td(self):
         return timedelta(seconds=self.elapsed)
+    
+    @property
+    def long_avg(self):#Gets the total average instead of just the running average
+        return self.elapsed/self.index
 
     def update_avg(self, n, dt):
         if n > 0:
@@ -135,6 +139,10 @@ class Progress(Infinite):
     @property
     def eta_td(self):
         return timedelta(seconds=self.eta)
+    
+    @property
+    def long_eta(self): #For long running tasks the total average is more stable
+        int(ceil(self.long_avg * self.remaining))
 
     @property
     def percent(self):
