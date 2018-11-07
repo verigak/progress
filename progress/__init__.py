@@ -66,7 +66,7 @@ class Infinite(object):
     
     @property
     def long_avg(self):#Gets the total average instead of just the running average
-        return self.elapsed/self.index
+        return self.elapsed/(self.index+1)
 
     def update_avg(self, n, dt):
         if n > 0:
