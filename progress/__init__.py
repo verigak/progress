@@ -143,6 +143,9 @@ class Progress(Infinite):
     @property
     def long_eta(self): #For long running tasks the total average is more stable
         return int(ceil(self.long_avg * self.remaining))
+    @property
+    def eta_td(self):
+        return timedelta(seconds=self.long_eta)
 
     @property
     def percent(self):
