@@ -40,6 +40,7 @@ class Infinite(object):
         self.index = 0
         self.start_ts = monotonic()
         self.avg = 0
+        self._avg_update_ts = self.start_ts
         self._ts = self.start_ts
         self._xput = deque(maxlen=self.sma_window)
         for key, val in kwargs.items():
@@ -69,8 +70,14 @@ class Infinite(object):
 
     def update_avg(self, n, dt):
         if n > 0:
+            xput_len = len(self._xput)
             self._xput.append(dt / n)
-            self.avg = sum(self._xput) / len(self._xput)
+            now = monotonic()
+            # update when we're still filling _xput, then after every second
+            if (xput_len < self.sma_window or
+                    now - self._avg_update_ts > 1):
+                self.avg = sum(self._xput) / len(self._xput)
+                self._avg_update_ts = now
 
     def update(self):
         pass
