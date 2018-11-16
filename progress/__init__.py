@@ -18,7 +18,10 @@ from collections import deque
 from datetime import timedelta
 from math import ceil
 from sys import stderr
-from time import time
+try:
+    from time import monotonic
+except ImportError:
+    from time import time as monotonic
 
 
 __version__ = '1.4'
@@ -35,7 +38,7 @@ class Infinite(object):
 
     def __init__(self, message='', **kwargs):
         self.index = 0
-        self.start_ts = time()
+        self.start_ts = monotonic()
         self.avg = 0
         self._ts = self.start_ts
         self._xput = deque(maxlen=self.sma_window)
@@ -58,7 +61,7 @@ class Infinite(object):
 
     @property
     def elapsed(self):
-        return int(time() - self.start_ts)
+        return int(monotonic() - self.start_ts)
 
     @property
     def elapsed_td(self):
@@ -102,7 +105,7 @@ class Infinite(object):
         return self.file.isatty() if self.check_tty else True
 
     def next(self, n=1):
-        now = time()
+        now = monotonic()
         dt = now - self._ts
         self.update_avg(n, dt)
         self._ts = now
