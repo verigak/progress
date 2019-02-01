@@ -18,7 +18,10 @@ from collections import deque
 from datetime import timedelta
 from math import ceil
 from sys import stderr
-from time import time
+try:
+    from time import monotonic
+except ImportError:
+    from time import time as monotonic
 
 
 __version__ = '1.4'
@@ -35,8 +38,9 @@ class Infinite(object):
 
     def __init__(self, message='', **kwargs):
         self.index = 0
-        self.start_ts = time()
+        self.start_ts = monotonic()
         self.avg = 0
+        self._avg_update_ts = self.start_ts
         self._ts = self.start_ts
         self._xput = deque(maxlen=self.sma_window)
         for key, val in kwargs.items():
@@ -58,7 +62,7 @@ class Infinite(object):
 
     @property
     def elapsed(self):
-        return int(time() - self.start_ts)
+        return int(monotonic() - self.start_ts)
 
     @property
     def elapsed_td(self):
@@ -66,8 +70,14 @@ class Infinite(object):
 
     def update_avg(self, n, dt):
         if n > 0:
+            xput_len = len(self._xput)
             self._xput.append(dt / n)
-            self.avg = sum(self._xput) / len(self._xput)
+            now = monotonic()
+            # update when we're still filling _xput, then after every second
+            if (xput_len < self.sma_window or
+                    now - self._avg_update_ts > 1):
+                self.avg = sum(self._xput) / len(self._xput)
+                self._avg_update_ts = now
 
     def update(self):
         pass
@@ -102,7 +112,7 @@ class Infinite(object):
         return self.file.isatty() if self.check_tty else True
 
     def next(self, n=1):
-        now = time()
+        now = monotonic()
         dt = now - self._ts
         self.update_avg(n, dt)
         self._ts = now
