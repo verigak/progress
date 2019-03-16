@@ -59,6 +59,9 @@ class Infinite(object):
         self._width = 0
         self.message = message
 
+        # Lazy writing
+        self.previous_line = ''
+
         if self.file and self.is_tty():
             if self.hide_cursor:
                 if os.name == 'nt':
@@ -107,7 +110,9 @@ class Infinite(object):
     def clearln(self):
         if self.file and self.is_tty():
             if os.name == 'nt':
-                empty_line = (shutil.get_terminal_size()[0]-1)*" "
+                max_empty_size = min(shutil.get_terminal_size()[
+                                     0]-1, len(self.previous_line))
+                empty_line = max_empty_size * " "
                 print('\r%s\r' % (empty_line), end='', file=self.file)
             else:
                 print('\r\x1b[K', end='', file=self.file)
@@ -121,9 +126,11 @@ class Infinite(object):
 
     def writeln(self, line):
         if self.file and self.is_tty():
-            self.clearln()
-            print(line, end='', file=self.file)
-            self.file.flush()
+            if line != self.previous_line:
+                self.clearln()
+                print(line, end='', file=self.file)
+                self.file.flush()
+            self.previous_line = line
 
     def finish(self):
         if self.file and self.is_tty():
