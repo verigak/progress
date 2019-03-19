@@ -127,8 +127,12 @@ class Infinite(object):
     def writeln(self, line):
         if self.file and self.is_tty():
             if line != self.previous_line:
-                self.clearln()
-                print(line, end='', file=self.file)
+                # We are not clearing the line just printing spaces
+                # at the of the line
+                # self.clearln()
+                empty = max(0, len(self.previous_line) - len(line))
+                empty = min(empty, shutil.get_terminal_size()[0]-1)
+                print("\r" + line + empty*" ", end='', file=self.file)
                 self.file.flush()
             self.previous_line = line
 
