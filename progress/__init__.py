@@ -48,11 +48,12 @@ class Infinite(object):
 
         self._width = 0
         self.message = message
+        self.line = ''
 
         if self.file and self.is_tty():
             if self.hide_cursor:
                 print(HIDE_CURSOR, end='', file=self.file)
-            print(self.message, end='', file=self.file)
+            #print(self.message, end='', file=self.file)
             self.file.flush()
 
     def __getitem__(self, key):
@@ -101,12 +102,15 @@ class Infinite(object):
             self.clearln()
             print(line, end='', file=self.file)
             self.file.flush()
+        self.line = ''.join(line)
 
     def finish(self):
         if self.file and self.is_tty():
-            print(file=self.file)
+            self.clearln()
+            print(self.line)
             if self.hide_cursor:
                 print(SHOW_CURSOR, end='', file=self.file)
+            self.file.flush()
 
     def is_tty(self):
         return self.file.isatty() if self.check_tty else True
