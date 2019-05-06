@@ -109,7 +109,10 @@ class Infinite(object):
                 print(SHOW_CURSOR, end='', file=self.file)
 
     def is_tty(self):
-        return self.file.isatty() if self.check_tty else True
+        try:
+            return self.file.isatty() if self.check_tty else True
+        except AttributeError:
+            raise AttributeError('\'{}\' object has no attribute \'isatty\'. Try setting parameter check_tty=False.'.format(self))
 
     def next(self, n=1):
         now = monotonic()
