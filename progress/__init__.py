@@ -14,6 +14,8 @@
 
 from __future__ import division, print_function
 
+import os
+import shutil
 from collections import deque
 from datetime import timedelta
 from math import ceil
@@ -28,6 +30,14 @@ __version__ = '1.5'
 
 HIDE_CURSOR = '\x1b[?25l'
 SHOW_CURSOR = '\x1b[?25h'
+
+if os.name == 'nt':
+    import msvcrt
+    import ctypes
+
+    class _CursorInfo(ctypes.Structure):
+        _fields_ = [("size", ctypes.c_int),
+                    ("visible", ctypes.c_byte)]
 
 
 class Infinite(object):
@@ -49,9 +59,21 @@ class Infinite(object):
         self._width = 0
         self.message = message
 
+        # Lazy writing
+        self.previous_line = ''
+
         if self.file and self.is_tty():
             if self.hide_cursor:
-                print(HIDE_CURSOR, end='', file=self.file)
+                if os.name == 'nt':
+                    ci = _CursorInfo()
+                    handle = ctypes.windll.kernel32.GetStdHandle(-11)
+                    ctypes.windll.kernel32.GetConsoleCursorInfo(
+                        handle, ctypes.byref(ci))
+                    ci.visible = False
+                    ctypes.windll.kernel32.SetConsoleCursorInfo(
+                        handle, ctypes.byref(ci))
+                else:
+                    print(HIDE_CURSOR, end='', file=self.file)
             print(self.message, end='', file=self.file)
             self.file.flush()
 
@@ -87,7 +109,13 @@ class Infinite(object):
 
     def clearln(self):
         if self.file and self.is_tty():
-            print('\r\x1b[K', end='', file=self.file)
+            if os.name == 'nt':
+                max_empty_size = min(shutil.get_terminal_size()[
+                                     0]-1, len(self.previous_line))
+                empty_line = max_empty_size * " "
+                print('\r%s\r' % (empty_line), end='', file=self.file)
+            else:
+                print('\r\x1b[K', end='', file=self.file)
 
     def write(self, s):
         if self.file and self.is_tty():
@@ -98,15 +126,30 @@ class Infinite(object):
 
     def writeln(self, line):
         if self.file and self.is_tty():
-            self.clearln()
-            print(line, end='', file=self.file)
-            self.file.flush()
+            if line != self.previous_line:
+                # We are not clearing the line just printing spaces
+                # at the of the line
+                # self.clearln()
+                empty = max(0, len(self.previous_line) - len(line))
+                empty = min(empty, shutil.get_terminal_size()[0]-1)
+                print("\r" + line + empty*" ", end='', file=self.file)
+                self.file.flush()
+            self.previous_line = line
 
     def finish(self):
         if self.file and self.is_tty():
             print(file=self.file)
             if self.hide_cursor:
-                print(SHOW_CURSOR, end='', file=self.file)
+                if os.name == 'nt':
+                    ci = _CursorInfo()
+                    handle = ctypes.windll.kernel32.GetStdHandle(-11)
+                    ctypes.windll.kernel32.GetConsoleCursorInfo(
+                        handle, ctypes.byref(ci))
+                    ci.visible = True
+                    ctypes.windll.kernel32.SetConsoleCursorInfo(
+                        handle, ctypes.byref(ci))
+                else:
+                    print(SHOW_CURSOR, end='', file=self.file)
 
     def is_tty(self):
         try:
