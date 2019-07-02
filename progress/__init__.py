@@ -14,6 +14,7 @@
 
 from __future__ import division, print_function
 
+import atexit
 from collections import deque
 from datetime import timedelta
 from math import ceil
@@ -52,6 +53,7 @@ class Infinite(object):
         if self.file and self.is_tty():
             if self.hide_cursor:
                 print(HIDE_CURSOR, end='', file=self.file)
+                atexit.register(self.finish)
             print(self.message, end='', file=self.file)
             self.file.flush()
 
@@ -107,6 +109,7 @@ class Infinite(object):
             print(file=self.file)
             if self.hide_cursor:
                 print(SHOW_CURSOR, end='', file=self.file)
+                atexit.unregister(self.finish)
 
     def is_tty(self):
         try:
