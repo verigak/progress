@@ -18,7 +18,7 @@ import atexit
 from collections import deque
 from datetime import timedelta
 from math import ceil
-from sys import stderr
+import sys
 try:
     from time import monotonic
 except ImportError:
@@ -32,12 +32,12 @@ SHOW_CURSOR = '\x1b[?25h'
 
 
 class Infinite(object):
-    file = stderr
     sma_window = 10         # Simple Moving Average window
     check_tty = True
     hide_cursor = True
 
     def __init__(self, message='', **kwargs):
+        self.file = sys.stderr
         self.index = 0
         self.start_ts = monotonic()
         self.avg = 0
