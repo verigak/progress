@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
+
 
 import random
 import time
@@ -22,7 +22,7 @@ def sleep():
 for bar_cls in (Bar, ChargingBar, FillingSquaresBar, FillingCirclesBar):
     suffix = '%(index)d/%(max)d [%(elapsed)d / %(eta)d / %(eta_td)s]'
     bar = bar_cls(bar_cls.__name__, suffix=suffix)
-    for i in bar.iter(range(200)):
+    for i in bar.iter(list(range(200))):
         sleep()
 
 for bar_cls in (IncrementalBar, PixelBar, ShadyBar):
@@ -33,11 +33,11 @@ for bar_cls in (IncrementalBar, PixelBar, ShadyBar):
             sleep()
 
 for spin in (Spinner, PieSpinner, MoonSpinner, LineSpinner, PixelSpinner):
-    for i in spin(spin.__name__ + ' ').iter(range(100)):
+    for i in spin(spin.__name__ + ' ').iter(list(range(100))):
         sleep()
 
 for singleton in (Counter, Countdown, Stack, Pie):
-    for i in singleton(singleton.__name__ + ' ').iter(range(100)):
+    for i in singleton(singleton.__name__ + ' ').iter(list(range(100))):
         sleep()
 
 bar = IncrementalBar('Random', suffix='%(index)d')

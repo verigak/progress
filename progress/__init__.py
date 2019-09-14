@@ -12,7 +12,7 @@
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-from __future__ import division, print_function
+
 
 import atexit
 from collections import deque
@@ -44,7 +44,7 @@ class Infinite(object):
         self._avg_update_ts = self.start_ts
         self._ts = self.start_ts
         self._xput = deque(maxlen=self.sma_window)
-        for key, val in kwargs.items():
+        for key, val in list(kwargs.items()):
             setattr(self, key, val)
 
         self._width = 0
