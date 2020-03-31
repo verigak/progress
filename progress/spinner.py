@@ -24,7 +24,9 @@ class Spinner(Infinite):
 
     def update(self):
         i = self.index % len(self.phases)
-        self.write(self.phases[i])
+        message = self.message % self
+        line = ''.join([message, self.phases[i]])
+        self.writeln(line)
 
 
 class PieSpinner(Spinner):

@@ -33,7 +33,7 @@ for bar_cls in (IncrementalBar, PixelBar, ShadyBar):
             sleep()
 
 for spin in (Spinner, PieSpinner, MoonSpinner, LineSpinner, PixelSpinner):
-    for i in spin(spin.__name__ + ' ').iter(range(100)):
+    for i in spin(spin.__name__ + ' %(index) 3d ').iter(range(100)):
         sleep()
 
 for singleton in (Counter, Countdown, Stack, Pie):
