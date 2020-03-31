@@ -158,6 +158,8 @@ class Progress(Infinite):
 
     @property
     def progress(self):
+        if self.max == 0:
+            return 0
         return min(1, self.index / self.max)
 
     @property
