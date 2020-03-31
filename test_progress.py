@@ -20,9 +20,9 @@ def sleep():
 
 
 for bar_cls in (Bar, ChargingBar, FillingSquaresBar, FillingCirclesBar):
-    suffix = '%(index)d/%(max)d [%(elapsed)d / %(eta)d / %(eta_td)s]'
+    suffix = '%(index)d/%(max)d [%(elapsed)d / %(eta)d / %(eta_td)s] (%(iter_value)s)'
     bar = bar_cls(bar_cls.__name__, suffix=suffix)
-    for i in bar.iter(range(200)):
+    for i in bar.iter(range(200, 400)):
         sleep()
 
 for bar_cls in (IncrementalBar, PixelBar, ShadyBar):

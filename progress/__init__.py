@@ -126,10 +126,13 @@ class Infinite(object):
         self.update()
 
     def iter(self, it):
+        self.iter_value = None
         with self:
             for x in it:
+                self.iter_value = x
                 yield x
                 self.next()
+        del self.iter_value
 
     def __enter__(self):
         self.start()
@@ -177,7 +180,10 @@ class Progress(Infinite):
         except TypeError:
             pass
 
+        self.iter_value = None
         with self:
             for x in it:
+                self.iter_value = x
                 yield x
                 self.next()
+        del self.iter_value
