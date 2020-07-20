@@ -39,6 +39,7 @@ class Infinite(object):
     def __init__(self, message='', **kwargs):
         self.index = 0
         self.print_dt = .5
+        self.prev_line = ''
         self.start_ts = monotonic()
         self.avg = 0
         self._avg_update_ts = self.start_ts
@@ -108,6 +109,8 @@ class Infinite(object):
             self.file.flush()
 
     def finish(self):
+        self._prev_write = monotonic() - self.print_dt * 2
+        self.writeln(self._prev_line)
         if self.file and self.is_tty():
             print(file=self.file)
             if self._hidden_cursor:
