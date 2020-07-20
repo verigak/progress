@@ -20,12 +20,16 @@ from . import Infinite, Progress
 
 class Counter(Infinite):
     def update(self):
-        self.write(str(self.index))
+        message = self.message % self
+        line = ''.join([message, str(self.index)])
+        self.writeln(line)
 
 
 class Countdown(Progress):
     def update(self):
-        self.write(str(self.remaining))
+        message = self.message % self
+        line = ''.join([message, str(self.remaining)])
+        self.writeln(line)
 
 
 class Stack(Progress):
@@ -34,7 +38,9 @@ class Stack(Progress):
     def update(self):
         nphases = len(self.phases)
         i = min(nphases - 1, int(self.progress * nphases))
-        self.write(self.phases[i])
+        message = self.message % self
+        line = ''.join([message, self.phases[i]])
+        self.writeln(line)
 
 
 class Pie(Stack):

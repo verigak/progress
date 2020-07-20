@@ -91,13 +91,6 @@ class Infinite(object):
         if self.file and self.is_tty():
             print('\r\x1b[K', end='', file=self.file)
 
-    def write(self, s):
-        if self.file and self.is_tty():
-            line = self.message + s.ljust(self._width)
-            print('\r' + line, end='', file=self.file)
-            self._width = max(self._width, len(s))
-            self.file.flush()
-
     def writeln(self, line):
         if self.file and self.is_tty():
             self.clearln()
