@@ -47,15 +47,14 @@ class Infinite(object):
         for key, val in kwargs.items():
             setattr(self, key, val)
 
-        self._width = 0
+        self._max_width = 0
         self.message = message
 
         if self.file and self.is_tty():
             if self.hide_cursor:
                 print(HIDE_CURSOR, end='', file=self.file)
                 atexit.register(self.finish)
-            print(self.message, end='', file=self.file)
-            self.file.flush()
+        self.writeln('')
 
     def __getitem__(self, key):
         if key.startswith('_'):
@@ -87,14 +86,15 @@ class Infinite(object):
     def start(self):
         pass
 
-    def clearln(self):
-        if self.file and self.is_tty():
-            print('\r\x1b[K', end='', file=self.file)
-
     def writeln(self, line):
         if self.file and self.is_tty():
-            self.clearln()
-            print(line, end='', file=self.file)
+            width = len(line)
+            if width < self._max_width:
+                # Add padding to cover previous contents
+                line += ' ' * (self._max_width - width)
+            else:
+                self._max_width = width
+            print('\r' + line, end='', file=self.file)
             self.file.flush()
 
     def finish(self):
