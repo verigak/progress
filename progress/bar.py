@@ -19,6 +19,7 @@ from __future__ import unicode_literals
 import sys
 
 from . import Progress
+from .colors import color
 
 
 class Bar(Progress):
@@ -28,13 +29,14 @@ class Bar(Progress):
     bar_suffix = '| '
     empty_fill = ' '
     fill = '#'
+    color = None
 
     def update(self):
         filled_length = int(self.width * self.progress)
         empty_length = self.width - filled_length
 
         message = self.message % self
-        bar = self.fill * filled_length
+        bar = color(self.fill * filled_length, fg=self.color)
         empty = self.empty_fill * empty_length
         suffix = self.suffix % self
         line = ''.join([message, self.bar_prefix, bar, empty, self.bar_suffix,
@@ -74,7 +76,7 @@ class IncrementalBar(Bar):
         nempty = self.width - nfull                  # Number of empty chars
 
         message = self.message % self
-        bar = self.phases[-1] * nfull
+        bar = color(self.phases[-1] * nfull, fg=self.color)
         current = self.phases[phase] if phase > 0 else ''
         empty = self.empty_fill * max(0, nempty - len(current))
         suffix = self.suffix % self
