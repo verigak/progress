@@ -95,10 +95,10 @@ class Infinite(object):
 
     def writeln(self, line):
         now = monotonic()
+        self._prev_line = line
         if now - self._prev_write < self.print_dt:
             return
         self._prev_write = now
-        self._prev_line = line
         if self.file and self.is_tty():
             width = len(line)
             if width < self._max_width:
