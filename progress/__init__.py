@@ -36,8 +36,9 @@ class Infinite(object):
     check_tty = True
     hide_cursor = True
 
-    def __init__(self, message='', print_dt = .500,**kwargs):
+    def __init__(self, message='', **kwargs):
         self.index = 0
+        self.print_dt = .5
         self.start_ts = monotonic()
         self.avg = 0
         self._avg_update_ts = self.start_ts
@@ -49,7 +50,6 @@ class Infinite(object):
         self._max_width = 0
         self._hidden_cursor = False
         self.message = message
-        self.print_dt = print_dt
         self._prev_write = self.start_ts - self.print_dt * 2
 
         if self.file and self.is_tty():
