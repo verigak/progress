@@ -112,7 +112,8 @@ class Infinite(object):
         try:
             return self.file.isatty() if self.check_tty else True
         except AttributeError:
-            raise AttributeError('\'{}\' object has no attribute \'isatty\'. Try setting parameter check_tty=False.'.format(self))
+            msg = "%s has no attribute 'isatty'. Try setting check_tty=False." % self
+            raise AttributeError(msg)
 
     def next(self, n=1):
         now = monotonic()
