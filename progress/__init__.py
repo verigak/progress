@@ -39,7 +39,7 @@ class Infinite(object):
     def __init__(self, message='', **kwargs):
         self.index = 0
         self.print_dt = .5
-        self.prev_line = ''
+        self._prev_line = ''
         self.start_ts = monotonic()
         self.avg = 0
         self._avg_update_ts = self.start_ts
