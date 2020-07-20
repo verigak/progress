@@ -37,7 +37,7 @@ class Infinite(object):
     check_tty = True
     hide_cursor = True
 
-    def __init__(self, message='', **kwargs):
+    def __init__(self, message='', print_dt = .500,**kwargs):
         self.index = 0
         self.start_ts = monotonic()
         self.avg = 0
@@ -49,6 +49,8 @@ class Infinite(object):
 
         self._width = 0
         self.message = message
+        self.print_dt = print_dt
+        self._prev_write = self.start_ts - self.print_dt * 2
 
         if self.file and self.is_tty():
             if self.hide_cursor:
@@ -92,6 +94,10 @@ class Infinite(object):
             print('\r\x1b[K', end='', file=self.file)
 
     def write(self, s):
+        now = monotonic()
+        if now self.prev_write < self._print_dt:
+            return
+        self.prev_write = now
         if self.file and self.is_tty():
             line = self.message + s.ljust(self._width)
             print('\r' + line, end='', file=self.file)
