@@ -14,7 +14,6 @@
 
 from __future__ import division, print_function
 
-import atexit
 from collections import deque
 from datetime import timedelta
 from math import ceil
@@ -48,13 +47,18 @@ class Infinite(object):
             setattr(self, key, val)
 
         self._max_width = 0
+        self._hidden_cursor = False
         self.message = message
 
         if self.file and self.is_tty():
             if self.hide_cursor:
                 print(HIDE_CURSOR, end='', file=self.file)
-                atexit.register(self.finish)
+                self._hidden_cursor = True
         self.writeln('')
+
+    def __del__(self):
+        if self._hidden_cursor:
+            print(SHOW_CURSOR, end='', file=self.file)
 
     def __getitem__(self, key):
         if key.startswith('_'):
@@ -100,9 +104,9 @@ class Infinite(object):
     def finish(self):
         if self.file and self.is_tty():
             print(file=self.file)
-            if self.hide_cursor:
+            if self._hidden_cursor:
                 print(SHOW_CURSOR, end='', file=self.file)
-                atexit.unregister(self.finish)
+                self._hidden_cursor = False
 
     def is_tty(self):
         try:
