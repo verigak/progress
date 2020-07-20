@@ -14,7 +14,6 @@
 
 from __future__ import division, print_function
 
-import atexit
 from collections import deque
 from datetime import timedelta
 from math import ceil
@@ -47,7 +46,8 @@ class Infinite(object):
         for key, val in kwargs.items():
             setattr(self, key, val)
 
-        self._width = 0
+        self._max_width = 0
+        self._hidden_cursor = False
         self.message = message
         self.print_dt = print_dt
         self._prev_write = self.start_ts - self.print_dt * 2
@@ -55,9 +55,12 @@ class Infinite(object):
         if self.file and self.is_tty():
             if self.hide_cursor:
                 print(HIDE_CURSOR, end='', file=self.file)
-                atexit.register(self.finish)
-            print(self.message, end='', file=self.file)
-            self.file.flush()
+                self._hidden_cursor = True
+        self.writeln('')
+
+    def __del__(self):
+        if self._hidden_cursor:
+            print(SHOW_CURSOR, end='', file=self.file)
 
     def __getitem__(self, key):
         if key.startswith('_'):
@@ -89,39 +92,34 @@ class Infinite(object):
     def start(self):
         pass
 
-    def clearln(self):
-        if self.file and self.is_tty():
-            print('\r\x1b[K', end='', file=self.file)
-
-    def write(self, s):
+    def writeln(self, line):
         now = monotonic()
         if now - self._prev_write < self.print_dt:
             return
         self._prev_write = now
         if self.file and self.is_tty():
-            line = self.message + s.ljust(self._width)
+            width = len(line)
+            if width < self._max_width:
+                # Add padding to cover previous contents
+                line += ' ' * (self._max_width - width)
+            else:
+                self._max_width = width
             print('\r' + line, end='', file=self.file)
-            self._width = max(self._width, len(s))
-            self.file.flush()
-
-    def writeln(self, line):
-        if self.file and self.is_tty():
-            self.clearln()
-            print(line, end='', file=self.file)
             self.file.flush()
 
     def finish(self):
         if self.file and self.is_tty():
             print(file=self.file)
-            if self.hide_cursor:
+            if self._hidden_cursor:
                 print(SHOW_CURSOR, end='', file=self.file)
-                atexit.unregister(self.finish)
+                self._hidden_cursor = False
 
     def is_tty(self):
         try:
             return self.file.isatty() if self.check_tty else True
         except AttributeError:
-            raise AttributeError('\'{}\' object has no attribute \'isatty\'. Try setting parameter check_tty=False.'.format(self))
+            msg = "%s has no attribute 'isatty'. Try setting check_tty=False." % self
+            raise AttributeError(msg)
 
     def next(self, n=1):
         now = monotonic()
@@ -132,10 +130,13 @@ class Infinite(object):
         self.update()
 
     def iter(self, it):
+        self.iter_value = None
         with self:
             for x in it:
+                self.iter_value = x
                 yield x
                 self.next()
+        del self.iter_value
 
     def __enter__(self):
         self.start()
@@ -164,6 +165,8 @@ class Progress(Infinite):
 
     @property
     def progress(self):
+        if self.max == 0:
+            return 0
         return min(1, self.index / self.max)
 
     @property
@@ -183,7 +186,10 @@ class Progress(Infinite):
         except TypeError:
             pass
 
+        self.iter_value = None
         with self:
             for x in it:
+                self.iter_value = x
                 yield x
                 self.next()
+        del self.iter_value
