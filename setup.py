@@ -10,7 +10,7 @@ setup(
     version=progress.__version__,
     description='Easy to use progress bars',
     long_description=open('README.rst').read(),
-    author='Giorgos Verigakis',
+    author='Georgios Verigakis',
     author_email='verigak@gmail.com',
     url='http://github.com/verigak/progress/',
     license='ISC',
