@@ -95,9 +95,9 @@ class Infinite(object):
 
     def write(self, s):
         now = monotonic()
-        if now self.prev_write < self._print_dt:
+        if now - self._prev_write < self.print_dt:
             return
-        self.prev_write = now
+        self._prev_write = now
         if self.file and self.is_tty():
             line = self.message + s.ljust(self._width)
             print('\r' + line, end='', file=self.file)
