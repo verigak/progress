@@ -15,27 +15,28 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 from __future__ import unicode_literals
+from typing import Tuple
 from . import Infinite, Progress
 
 
 class Counter(Infinite):
-    def update(self):
+    def update(self) -> None:
         message = self.message % self
         line = ''.join([message, str(self.index)])
         self.writeln(line)
 
 
 class Countdown(Progress):
-    def update(self):
+    def update(self) -> None:
         message = self.message % self
         line = ''.join([message, str(self.remaining)])
         self.writeln(line)
 
 
 class Stack(Progress):
-    phases = (' ', '▁', '▂', '▃', '▄', '▅', '▆', '▇', '█')
+    phases: Tuple[str, ...] = (' ', '▁', '▂', '▃', '▄', '▅', '▆', '▇', '█')
 
-    def update(self):
+    def update(self) -> None:
         nphases = len(self.phases)
         i = min(nphases - 1, int(self.progress * nphases))
         message = self.message % self

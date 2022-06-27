@@ -15,14 +15,15 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 from __future__ import unicode_literals
+from typing import Tuple
 from . import Infinite
 
 
 class Spinner(Infinite):
-    phases = ('-', '\\', '|', '/')
-    hide_cursor = True
+    phases: Tuple[str, ...] = ('-', '\\', '|', '/')
+    hide_cursor: bool = True
 
-    def update(self):
+    def update(self) -> None:
         i = self.index % len(self.phases)
         message = self.message % self
         line = ''.join([message, self.phases[i]])
@@ -30,16 +31,16 @@ class Spinner(Infinite):
 
 
 class PieSpinner(Spinner):
-    phases = ['◷', '◶', '◵', '◴']
+    phases = ('◷', '◶', '◵', '◴')
 
 
 class MoonSpinner(Spinner):
-    phases = ['◑', '◒', '◐', '◓']
+    phases = ('◑', '◒', '◐', '◓')
 
 
 class LineSpinner(Spinner):
-    phases = ['⎺', '⎻', '⎼', '⎽', '⎼', '⎻']
+    phases = ('⎺', '⎻', '⎼', '⎽', '⎼', '⎻')
 
 
 class PixelSpinner(Spinner):
-    phases = ['⣾', '⣷', '⣯', '⣟', '⡿', '⢿', '⣻', '⣽']
+    phases = ('⣾', '⣷', '⣯', '⣟', '⡿', '⢿', '⣻', '⣽')
