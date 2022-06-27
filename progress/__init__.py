@@ -66,14 +66,14 @@ class Infinite(object):
         return getattr(self, key, None)
 
     @property
-    def elapsed(self):
+    def elapsed(self) -> int:
         return int(monotonic() - self.start_ts)
 
     @property
-    def elapsed_td(self):
+    def elapsed_td(self) -> timedelta:
         return timedelta(seconds=self.elapsed)
 
-    def update_avg(self, n, dt):
+    def update_avg(self, n, dt) -> None:
         if n > 0:
             xput_len = len(self._xput)
             self._xput.append(dt / n)
@@ -84,13 +84,13 @@ class Infinite(object):
                 self.avg = sum(self._xput) / len(self._xput)
                 self._avg_update_ts = now
 
-    def update(self):
+    def update(self) -> None:
         pass
 
-    def start(self):
+    def start(self) -> None:
         pass
 
-    def writeln(self, line):
+    def writeln(self, line) -> None:
         if self.file and self.is_tty():
             width = len(line)
             if width < self._max_width:
@@ -101,21 +101,21 @@ class Infinite(object):
             print('\r' + line, end='', file=self.file)
             self.file.flush()
 
-    def finish(self):
+    def finish(self) -> None:
         if self.file and self.is_tty():
             print(file=self.file)
             if self._hidden_cursor:
                 print(SHOW_CURSOR, end='', file=self.file)
                 self._hidden_cursor = False
 
-    def is_tty(self):
+    def is_tty(self) -> bool:
         try:
             return self.file.isatty() if self.check_tty else True
         except AttributeError:
             msg = "%s has no attribute 'isatty'. Try setting check_tty=False." % self
             raise AttributeError(msg)
 
-    def next(self, n=1):
+    def next(self, n=1) -> None:
         now = monotonic()
         dt = now - self._ts
         self.update_avg(n, dt)

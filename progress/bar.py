@@ -15,6 +15,7 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 from __future__ import unicode_literals
+from typing import Tuple, Union
 
 import sys
 
@@ -23,15 +24,15 @@ from .colors import color
 
 
 class Bar(Progress):
-    width = 32
-    suffix = '%(index)d/%(max)d'
-    bar_prefix = ' |'
-    bar_suffix = '| '
-    empty_fill = ' '
-    fill = '#'
-    color = None
+    width: int = 32
+    suffix: str = '%(index)d/%(max)d'
+    bar_prefix: str = ' |'
+    bar_suffix: str = '| '
+    empty_fill: str = ' '
+    fill: str = '#'
+    color: Union[None,str] = None
 
-    def update(self):
+    def update(self) -> None:
         filled_length = int(self.width * self.progress)
         empty_length = self.width - filled_length
 
@@ -45,30 +46,30 @@ class Bar(Progress):
 
 
 class ChargingBar(Bar):
-    suffix = '%(percent)d%%'
-    bar_prefix = ' '
-    bar_suffix = ' '
-    empty_fill = '∙'
-    fill = '█'
+    suffix: str = '%(percent)d%%'
+    bar_prefix: str = ' '
+    bar_suffix: str = ' '
+    empty_fill: str = '∙'
+    fill: str = '█'
 
 
 class FillingSquaresBar(ChargingBar):
-    empty_fill = '▢'
-    fill = '▣'
+    empty_fill: str = '▢'
+    fill: str = '▣'
 
 
 class FillingCirclesBar(ChargingBar):
-    empty_fill = '◯'
-    fill = '◉'
+    empty_fill: str = '◯'
+    fill: str = '◉'
 
 
 class IncrementalBar(Bar):
     if sys.platform.startswith('win'):
-        phases = (u' ', u'▌', u'█')
+        phases: Tuple[str, ...] = (u' ', u'▌', u'█')
     else:
-        phases = (' ', '▏', '▎', '▍', '▌', '▋', '▊', '▉', '█')
+        phases: Tuple[str, ...] = (' ', '▏', '▎', '▍', '▌', '▋', '▊', '▉', '█')
 
-    def update(self):
+    def update(self) -> None:
         nphases = len(self.phases)
         filled_len = self.width * self.progress
         nfull = int(filled_len)                      # Number of full chars
@@ -86,8 +87,8 @@ class IncrementalBar(Bar):
 
 
 class PixelBar(IncrementalBar):
-    phases = ('⡀', '⡄', '⡆', '⡇', '⣇', '⣧', '⣷', '⣿')
+    phases: Tuple[str,...] = ('⡀', '⡄', '⡆', '⡇', '⣇', '⣧', '⣷', '⣿')
 
 
 class ShadyBar(IncrementalBar):
-    phases = (' ', '░', '▒', '▓', '█')
+    phases: Tuple[str,...] = (' ', '░', '▒', '▓', '█')
