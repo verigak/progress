@@ -45,4 +45,4 @@ class Stack(Progress):
 
 
 class Pie(Stack):
-    phases = ('○', '◔', '◑', '◕', '●')
+    phases: Tuple[str,...] = ('○', '◔', '◑', '◕', '●')

@@ -15,7 +15,7 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 from __future__ import unicode_literals
-from typing import Tuple
+from typing import Tuple, Union
 
 import sys
 
@@ -30,7 +30,7 @@ class Bar(Progress):
     bar_suffix: str = '| '
     empty_fill: str = ' '
     fill: str = '#'
-    color = None
+    color: Union[None,str] = None
 
     def update(self) -> None:
         filled_length = int(self.width * self.progress)
@@ -46,21 +46,21 @@ class Bar(Progress):
 
 
 class ChargingBar(Bar):
-    suffix = '%(percent)d%%'
-    bar_prefix = ' '
-    bar_suffix = ' '
-    empty_fill = '∙'
-    fill = '█'
+    suffix: str = '%(percent)d%%'
+    bar_prefix: str = ' '
+    bar_suffix: str = ' '
+    empty_fill: str = '∙'
+    fill: str = '█'
 
 
 class FillingSquaresBar(ChargingBar):
-    empty_fill = '▢'
-    fill = '▣'
+    empty_fill: str = '▢'
+    fill: str = '▣'
 
 
 class FillingCirclesBar(ChargingBar):
-    empty_fill = '◯'
-    fill = '◉'
+    empty_fill: str = '◯'
+    fill: str = '◉'
 
 
 class IncrementalBar(Bar):
@@ -87,8 +87,8 @@ class IncrementalBar(Bar):
 
 
 class PixelBar(IncrementalBar):
-    phases = ('⡀', '⡄', '⡆', '⡇', '⣇', '⣧', '⣷', '⣿')
+    phases: Tuple[str,...] = ('⡀', '⡄', '⡆', '⡇', '⣇', '⣧', '⣷', '⣿')
 
 
 class ShadyBar(IncrementalBar):
-    phases = (' ', '░', '▒', '▓', '█')
+    phases: Tuple[str,...] = (' ', '░', '▒', '▓', '█')

@@ -31,16 +31,16 @@ class Spinner(Infinite):
 
 
 class PieSpinner(Spinner):
-    phases = ('◷', '◶', '◵', '◴')
+    phases: Tuple[str,...] = ('◷', '◶', '◵', '◴')
 
 
 class MoonSpinner(Spinner):
-    phases = ('◑', '◒', '◐', '◓')
+    phases: Tuple[str,...] = ('◑', '◒', '◐', '◓')
 
 
 class LineSpinner(Spinner):
-    phases = ('⎺', '⎻', '⎼', '⎽', '⎼', '⎻')
+    phases: Tuple[str,...] = ('⎺', '⎻', '⎼', '⎽', '⎼', '⎻')
 
 
 class PixelSpinner(Spinner):
-    phases = ('⣾', '⣷', '⣯', '⣟', '⡿', '⢿', '⣻', '⣽')
+    phases: Tuple[str,...] = ('⣾', '⣷', '⣯', '⣟', '⡿', '⢿', '⣻', '⣽')

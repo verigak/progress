@@ -23,7 +23,7 @@ STYLES = ('bold', 'faint', 'italic', 'underline', 'blink', 'blink2',
           'negative', 'concealed', 'crossed')
 
 
-def color(s, fg=None, bg=None, style=None):
+def color(s, fg=None, bg=None, style=None) -> str:
     sgr = []
 
     if fg:
