@@ -33,7 +33,7 @@ for bar_cls in (IncrementalBar, PixelBar, ShadyBar):
             bar.next()
             sleep()
 
-bar = IncrementalBar(bold('Corolored'), color='green')
+bar = IncrementalBar(bold('Colored'), color='green')
 for i in bar.iter(range(200)):
     sleep()
 
