@@ -18,6 +18,7 @@ from collections import deque
 from datetime import timedelta
 from math import ceil
 from sys import stderr
+import cursor
 try:
     from time import monotonic
 except ImportError:
@@ -25,9 +26,6 @@ except ImportError:
 
 
 __version__ = '1.6'
-
-HIDE_CURSOR = '\x1b[?25l'
-SHOW_CURSOR = '\x1b[?25h'
 
 
 class Infinite(object):
@@ -52,13 +50,13 @@ class Infinite(object):
 
         if self.file and self.is_tty():
             if self.hide_cursor:
-                print(HIDE_CURSOR, end='', file=self.file)
+                cursor.hide()
                 self._hidden_cursor = True
         self.writeln('')
 
     def __del__(self):
         if self._hidden_cursor:
-            print(SHOW_CURSOR, end='', file=self.file)
+            cursor.show()
 
     def __getitem__(self, key):
         if key.startswith('_'):
@@ -105,7 +103,7 @@ class Infinite(object):
         if self.file and self.is_tty():
             print(file=self.file)
             if self._hidden_cursor:
-                print(SHOW_CURSOR, end='', file=self.file)
+                cursor.show()
                 self._hidden_cursor = False
 
     def is_tty(self):
