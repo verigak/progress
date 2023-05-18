@@ -101,7 +101,7 @@ class Infinite(object):
 
     def finish(self):
         if self.file and self.is_tty():
-            print(file=self.file)
+            print(flush = True, file=self.file)
             if self._hidden_cursor:
                 cursor.show()
                 self._hidden_cursor = False
