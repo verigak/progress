@@ -86,7 +86,7 @@ eta         avg * remaining
 eta_td      eta as a timedelta (useful for printing as a string)
 ==========  ================================
 
-Instead of passing all configuration options on instatiation, you can create
+Instead of passing all configuration options on instantiation, you can create
 your custom subclass:
 
 .. code-block:: python
