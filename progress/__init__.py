@@ -24,7 +24,7 @@ except ImportError:
     from time import time as monotonic
 
 
-__version__ = '1.6'
+__version__ = '1.6.1'
 
 HIDE_CURSOR = '\x1b[?25l'
 SHOW_CURSOR = '\x1b[?25h'
