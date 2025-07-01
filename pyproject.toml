@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "progress"
+dynamic = ["version"]
+description = "Easy to use progress bars"
+readme = "README.rst"
+authors = [{ name = "Georgios Verigakis", email = "verigak@gmail.com" }]
+maintainers = [{ name = "Georgios Verigakis", email = "verigak@gmail.com" }]
+license = "ISC"
+license-files = ["LICENSE"]
+requires-python = ">=3.6"
+
+keywords = ["progress", "bar"]
+classifiers = [
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+
+[project.urls]
+Homepage = "https://github.com/verigak/progress/"
+Repository = "https://github.com/verigak/progress.git"
+Issues = "https://github.com/verigak/progress/issues"
+
+[tool.setuptools]
+packages = ["progress"]
+
+[tool.setuptools.dynamic]
+version = {attr = "progress.__version__"}
