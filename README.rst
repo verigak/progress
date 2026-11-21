@@ -50,6 +50,28 @@ The result will be a bar like the following: ::
 
     Processing |#############                   | 42/100
 
+Use ``next(n)`` when you know how much work was done since the last update,
+or ``goto(index)`` when you know the total amount completed so far. For
+example, an SFTP download callback receives the cumulative number of bytes
+transferred and the total file size:
+
+.. code-block:: python
+
+    from progress.bar import Bar
+
+    # sftp is an already connected Paramiko SFTPClient.
+    with Bar('Downloading', max=0, suffix='%(percent)d%%') as bar:
+        def report_progress(transferred, total):
+            bar.max = total
+            bar.goto(transferred)
+
+        sftp.get('remote-file', 'local-file', callback=report_progress)
+
+If the callback reports 100 bytes and then 150 bytes, ``goto`` sets the
+index to 150. Calling ``next`` with both values would add them and show
+250 instead. The context manager calls ``finish`` when the transfer ends,
+including when it raises an exception.
+
 To simplify the common case where the work is done in an iterator, you can
 use the ``iter`` method:
 
