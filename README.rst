@@ -58,6 +58,22 @@ use the ``iter`` method:
     for i in Bar('Processing').iter(it):
         # Do some work
 
+To reuse a bar for another operation, call ``reset`` before starting it:
+
+.. code-block:: python
+
+    bar = Bar('Processing', suffix='%(index)d/%(max)d')
+    for batch in batches:
+        bar.reset()
+        for item in bar.iter(batch):
+            # Do some work
+            pass
+
+``reset`` clears the index, elapsed time and average used for ETA, then
+redraws the indicator. It preserves configuration such as the message,
+output file and maximum; ``iter`` still sets the maximum from the iterable
+when its length is available. Spinners and counters also support ``reset``.
+
 Progress bars are very customizable, you can change their width, their fill
 character, their suffix and more:
 
