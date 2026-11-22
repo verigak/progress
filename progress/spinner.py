@@ -16,16 +16,19 @@
 
 from __future__ import unicode_literals
 from . import Infinite
+from .colors import color
 
 
 class Spinner(Infinite):
     phases = ('-', '\\', '|', '/')
     hide_cursor = True
+    color = None
 
     def update(self):
         i = self.index % len(self.phases)
         message = self.message % self
-        line = ''.join([message, self.phases[i]])
+        phase = color(self.phases[i], fg=self.color)
+        line = ''.join([message, phase])
         self.writeln(line)
 
 
