@@ -107,6 +107,55 @@ You can also override any of the arguments or create your own:
             return self.eta // 3600
 
 
+Downloads with urllib.request
+=============================
+
+``urlretrieve`` calls its ``reporthook`` with a block count, a block size, and
+the total size in bytes (or ``-1`` when the server does not provide it). The
+block count is cumulative, so use ``goto`` to set the bar's absolute position.
+Clamp the last update to the total size because the final block may be short.
+For an unknown size, a spinner can show activity instead:
+
+.. code-block:: python
+
+    from urllib.request import urlretrieve
+    from progress.bar import Bar
+    from progress.spinner import Spinner
+
+    class DownloadProgress:
+        def __init__(self, message):
+            self.message = message
+            self.indicator = None
+
+        def __call__(self, blocks, block_size, total_size):
+            if self.indicator is None:
+                if total_size >= 0:
+                    self.indicator = Bar(self.message, max=total_size)
+                else:
+                    self.indicator = Spinner(self.message + ' ')
+
+            if isinstance(self.indicator, Bar):
+                self.indicator.goto(min(blocks * block_size, self.indicator.max))
+            elif blocks:
+                self.indicator.next()
+
+        def finish(self):
+            if self.indicator is not None:
+                self.indicator.finish()
+
+    report = DownloadProgress('Downloading')
+    try:
+        urlretrieve('https://example.com/archive.zip', 'archive.zip',
+                    reporthook=report)
+    finally:
+        report.finish()
+
+The ``finally`` block finishes the display and restores the cursor even if the
+download raises an exception. It does not suppress the exception or remove a
+partially downloaded file. ``urllib.request`` is part of Python 3's standard
+library; this example needs no additional HTTP package.
+
+
 Spinners
 ========
 
