@@ -107,6 +107,31 @@ You can also override any of the arguments or create your own:
             return self.eta // 3600
 
 
+Output in IDE consoles and workflow logs
+========================================
+
+By default, indicators write to standard error and only draw when the selected
+stream reports that it is a terminal (``isatty()``). An IDE console, redirected
+stream, or workflow log collector may report otherwise, so no bar is shown.
+Set ``check_tty=False`` to force output, and choose the stream your environment
+captures:
+
+.. code-block:: python
+
+    import sys
+    from progress.bar import Bar
+
+    with Bar('Processing', max=3, file=sys.stdout,
+             check_tty=False, hide_cursor=False) as bar:
+        for item in range(3):
+            bar.next()
+
+``hide_cursor=False`` avoids cursor hide/show escape sequences. The bar still
+uses carriage returns to redraw a line. Log viewers that do not interpret
+carriage returns may show repeated updates instead of an animated bar; forcing
+output cannot add terminal support to the viewer. For line-oriented logs,
+ordinary periodic ``print()`` or logging calls can be more suitable.
+
 Spinners
 ========
 
