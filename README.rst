@@ -82,6 +82,7 @@ percent     progress * 100
 avg         simple moving average time per item (in seconds)
 elapsed     elapsed time in seconds
 elapsed_td  elapsed as a timedelta (useful for printing as a string)
+duration    fractional seconds since construction, frozen at finish
 eta         avg * remaining
 eta_td      eta as a timedelta (useful for printing as a string)
 ==========  ================================
@@ -106,6 +107,33 @@ You can also override any of the arguments or create your own:
         def remaining_hours(self):
             return self.eta // 3600
 
+
+Measuring duration
+==================
+
+Use ``duration`` to measure work with subsecond precision. It counts from
+indicator construction and stops at the first ``finish()`` call, including
+when a context manager exits. Reading it after printing a report does not
+include time spent preparing that report. Before finishing, it reports the
+current duration. Repeated calls to ``finish()`` retain the original duration.
+
+.. code-block:: python
+
+    from progress.bar import Bar
+
+    with Bar('Processing', max=20) as bar:
+        for item in range(20):
+            # Do some work
+            bar.next()
+
+    seconds = bar.duration
+    if seconds > 0:
+        print('Processed %d items in %.3f seconds (%.1f per second)' %
+              (bar.index, seconds, bar.index / seconds))
+
+``elapsed`` remains the integer count of seconds since construction and
+continues to advance after finishing. ``duration`` is available on both bars
+and spinners, including when output is disabled with ``file=None``.
 
 Spinners
 ========

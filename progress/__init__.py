@@ -39,6 +39,7 @@ class Infinite(object):
     def __init__(self, message='', **kwargs):
         self.index = 0
         self.start_ts = monotonic()
+        self.end_ts = None
         self.avg = 0
         self._avg_update_ts = self.start_ts
         self._ts = self.start_ts
@@ -64,6 +65,11 @@ class Infinite(object):
         if key.startswith('_'):
             return None
         return getattr(self, key, None)
+
+    @property
+    def duration(self):
+        end_ts = monotonic() if self.end_ts is None else self.end_ts
+        return end_ts - self.start_ts
 
     @property
     def elapsed(self):
@@ -102,6 +108,8 @@ class Infinite(object):
             self.file.flush()
 
     def finish(self):
+        if self.end_ts is None:
+            self.end_ts = monotonic()
         if self.file and self.is_tty():
             print(file=self.file)
             if self._hidden_cursor:
