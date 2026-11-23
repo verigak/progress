@@ -129,6 +129,40 @@ You can also override any of the arguments or create your own:
             return self.eta // 3600
 
 
+Timing Sequential Jobs
+======================
+
+``elapsed`` and ``elapsed_td`` measure time since the bar was constructed.
+If several worker objects each construct a bar in ``__init__``, a later
+worker's elapsed time includes the time spent waiting for earlier workers.
+Entering an existing bar as a context manager does not reset this clock.
+
+Create a fresh bar when the corresponding job begins. A worker can keep
+its inputs and settings in ``__init__`` and create the bar in ``__call__``:
+
+.. code-block:: python
+
+    from progress.bar import Bar
+
+    class Worker:
+        def __init__(self, items):
+            self.items = items
+
+        def __call__(self):
+            with Bar('Processing', max=len(self.items),
+                     suffix='%(elapsed_td)s elapsed') as bar:
+                for item in self.items:
+                    process(item)  # Your application function.
+                    bar.next()
+
+    first = Worker([1, 2])
+    second = Worker([3, 4])
+    first()
+    second()
+
+Each call gets its own start time, progress count and speed samples.
+Creating a new bar also makes repeated calls to the same worker independent.
+
 Spinners
 ========
 
