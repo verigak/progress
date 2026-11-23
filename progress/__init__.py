@@ -90,6 +90,20 @@ class Infinite(object):
     def start(self):
         pass
 
+    def reset(self):
+        """Start a new operation, keeping the current configuration."""
+        self.index = 0
+        self.start_ts = monotonic()
+        self.avg = 0
+        self._avg_update_ts = self.start_ts
+        self._ts = self.start_ts
+        self._xput.clear()
+        if self.file and self.is_tty():
+            if self.hide_cursor and not self._hidden_cursor:
+                print(HIDE_CURSOR, end='', file=self.file)
+                self._hidden_cursor = True
+        self.update()
+
     def writeln(self, line):
         if self.file and self.is_tty():
             width = len(line)
