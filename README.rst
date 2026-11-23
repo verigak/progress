@@ -151,6 +151,16 @@ There are 5 predefined spinners:
 - ``LineSpinner``
 - ``PixelSpinner``
 
+All spinners accept the same ``color`` option as bars. It colors the spinning
+character while leaving the message unchanged:
+
+.. code-block:: python
+
+    spinner = Spinner('Loading ', color='green')
+
+Use a color name (such as ``'red'`` or ``'green'``) or an ANSI 256-color index.
+The default, ``color=None``, leaves the spinner uncolored.
+
 Installation
 ============
 
