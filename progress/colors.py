@@ -26,7 +26,7 @@ STYLES = ('bold', 'faint', 'italic', 'underline', 'blink', 'blink2',
 def color(s, fg=None, bg=None, style=None):
     sgr = []
 
-    if fg:
+    if fg or fg == 0:
         if fg in COLORS:
             sgr.append(str(30 + COLORS.index(fg)))
         elif isinstance(fg, int) and 0 <= fg <= 255:
@@ -34,7 +34,7 @@ def color(s, fg=None, bg=None, style=None):
         else:
             raise Exception('Invalid color "%s"' % fg)
 
-    if bg:
+    if bg or bg == 0:
         if bg in COLORS:
             sgr.append(str(40 + COLORS.index(bg)))
         elif isinstance(bg, int) and 0 <= bg <= 255:
