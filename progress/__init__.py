@@ -17,6 +17,7 @@ from __future__ import division, print_function
 from collections import deque
 from datetime import timedelta
 from math import ceil
+import re
 from sys import stderr
 try:
     from time import monotonic
@@ -28,6 +29,7 @@ __version__ = '1.6.1'
 
 HIDE_CURSOR = '\x1b[?25l'
 SHOW_CURSOR = '\x1b[?25h'
+_SGR_PATTERN = re.compile(r'\x1b\[[0-9;]*m')
 
 
 class Infinite(object):
@@ -92,7 +94,7 @@ class Infinite(object):
 
     def writeln(self, line):
         if self.file and self.is_tty():
-            width = len(line)
+            width = len(_SGR_PATTERN.sub('', line))
             if width < self._max_width:
                 # Add padding to cover previous contents
                 line += ' ' * (self._max_width - width)
