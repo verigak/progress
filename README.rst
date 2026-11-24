@@ -91,6 +91,10 @@ This will produce a bar like the following: ::
 
     Loading |@@@@@@@@@@@@@                   | 42%
 
+Output follows the current ``sys.stderr``, including replacements made after
+the bar was created. Pass ``file=stream`` to use a fixed stream, or ``file=None``
+to disable output.
+
 You can use a number of template arguments in ``message`` and ``suffix``:
 
 ==========  ================================
