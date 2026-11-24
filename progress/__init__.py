@@ -42,9 +42,9 @@ class Infinite(object):
         self.avg = 0
         self._avg_update_ts = self.start_ts
         self._ts = self.start_ts
-        self._xput = deque(maxlen=self.sma_window)
         for key, val in kwargs.items():
             setattr(self, key, val)
+        self._xput = deque(maxlen=self.sma_window)
 
         self._max_width = 0
         self._hidden_cursor = False
