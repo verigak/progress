@@ -76,11 +76,11 @@ class IncrementalBar(Bar):
         nempty = self.width - nfull                  # Number of empty chars
 
         message = self.message % self
-        bar = color(self.phases[-1] * nfull, fg=self.color)
         current = self.phases[phase] if phase > 0 else ''
+        bar = color(self.phases[-1] * nfull + current, fg=self.color)
         empty = self.empty_fill * max(0, nempty - len(current))
         suffix = self.suffix % self
-        line = ''.join([message, self.bar_prefix, bar, current, empty,
+        line = ''.join([message, self.bar_prefix, bar, empty,
                         self.bar_suffix, suffix])
         self.writeln(line)
 
