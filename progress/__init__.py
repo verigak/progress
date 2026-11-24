@@ -119,7 +119,8 @@ class Infinite(object):
         now = monotonic()
         dt = now - self._ts
         self.update_avg(n, dt)
-        self._ts = now
+        if n != 0:
+            self._ts = now
         self.index = self.index + n
         self.update()
 
