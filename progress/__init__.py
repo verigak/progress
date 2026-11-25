@@ -107,6 +107,7 @@ class Infinite(object):
             if self._hidden_cursor:
                 print(SHOW_CURSOR, end='', file=self.file)
                 self._hidden_cursor = False
+            self.file.flush()
 
     def is_tty(self):
         try:
