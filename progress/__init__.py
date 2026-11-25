@@ -31,12 +31,13 @@ SHOW_CURSOR = '\x1b[?25h'
 
 
 class Infinite(object):
+    message = ''
     file = stderr
     sma_window = 10         # Simple Moving Average window
     check_tty = True
     hide_cursor = True
 
-    def __init__(self, message='', **kwargs):
+    def __init__(self, message=None, **kwargs):
         self.index = 0
         self.start_ts = monotonic()
         self.avg = 0
@@ -48,7 +49,7 @@ class Infinite(object):
 
         self._max_width = 0
         self._hidden_cursor = False
-        self.message = message
+        self.message = self.message if message is None else message
 
         if self.file and self.is_tty():
             if self.hide_cursor:
@@ -141,9 +142,7 @@ class Infinite(object):
 
 
 class Progress(Infinite):
-    def __init__(self, *args, **kwargs):
-        super(Progress, self).__init__(*args, **kwargs)
-        self.max = kwargs.get('max', 100)
+    max = 100
 
     @property
     def eta(self):
