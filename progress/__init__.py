@@ -101,9 +101,10 @@ class Infinite(object):
             print('\r' + line, end='', file=self.file)
             self.file.flush()
 
-    def finish(self):
+    def finish(self, print_newline=True):
         if self.file and self.is_tty():
-            print(file=self.file)
+            if print_newline:
+                print(file=self.file)
             if self._hidden_cursor:
                 print(SHOW_CURSOR, end='', file=self.file)
                 self._hidden_cursor = False
