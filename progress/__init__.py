@@ -38,6 +38,8 @@ class Infinite(object):
 
     def __init__(self, message='', **kwargs):
         self.index = 0
+        self.print_dt = .5
+        self._prev_line = ''
         self.start_ts = monotonic()
         self.avg = 0
         self._avg_update_ts = self.start_ts
@@ -49,6 +51,7 @@ class Infinite(object):
         self._max_width = 0
         self._hidden_cursor = False
         self.message = message
+        self._prev_write = self.start_ts - self.print_dt * 2
 
         if self.file and self.is_tty():
             if self.hide_cursor:
@@ -91,6 +94,11 @@ class Infinite(object):
         pass
 
     def writeln(self, line):
+        now = monotonic()
+        self._prev_line = line
+        if now - self._prev_write < self.print_dt:
+            return
+        self._prev_write = now
         if self.file and self.is_tty():
             width = len(line)
             if width < self._max_width:
@@ -102,6 +110,8 @@ class Infinite(object):
             self.file.flush()
 
     def finish(self):
+        self._prev_write = monotonic() - self.print_dt * 2
+        self.writeln(self._prev_line)
         if self.file and self.is_tty():
             print(file=self.file)
             if self._hidden_cursor:
